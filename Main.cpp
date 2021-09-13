@@ -1,4 +1,5 @@
 #include <iostream>
+#include <Windows.h>
 #include "Class.h"
 #include "Func.h"
 
@@ -6,6 +7,13 @@ int main()
 {
 	File_Open(MAIN_SCREEN_PATH);
 
+	//Key_Input();
+	
+	//system("mode con cols=30 lines=30 | title Á¦¸ñ¸í");
+	//Cursor cur;
+	//cur.Get_Cursor();
+
+	//Cursor_Move(1,1);
 	//select menu
 	/*
 	do

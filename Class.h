@@ -6,6 +6,17 @@
 #define OPTION_SCREEN_PATH "./res"
 #define GAME_BOX_PATH "./res"
 
+//Func.cpp
+class Cursor
+{
+public:
+	int x;
+	int y;
+	
+	void Get_Cursor();
+	void Set_Cursor();
+};
+
 class Game_Setting
 {
 public:
