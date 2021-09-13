@@ -1,9 +1,10 @@
 #include <iostream>
 #include "Class.h"
+#include "Func.h"
 
 int main()
 {
-	//file open menu screen
+	File_Open(MAIN_SCREEN_PATH);
 
 	//select menu
 	/*

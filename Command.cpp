@@ -1,29 +1,29 @@
 #include <iostream>
-#include "Class.h"
+#include "Command.h"
 
-void Command::Show_Option()
+void Show_Option()
 {
 	//set option
 }
 
-void Command::Show_Rank()
+void Show_Rank()
 {
 	//show rank
 }
 
-void Command::Show_Help()
+void Show_Help()
 {
 	//show help
 }
 
-void Command::New_Game()
+void New_Game()
 {
 	//select 1p or 2p
 	//input ID
 	//Play_Game_1P() or Play_Game_2P()
 }
 
-void Command::Load_Game()
+void Load_Game()
 {
 	//select 1p or 2p
 	//input ID

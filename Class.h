@@ -1,6 +1,6 @@
 #pragma once
 
-#define MAIN_SCREEN_PATH "./res/"
+#define MAIN_SCREEN_PATH "./res/main_menu.txt"
 #define RANKING_SCREEN_PATH "./res/"
 #define HELP_SCREEN_PATH "./res/"
 #define OPTION_SCREEN_PATH "./res"
@@ -23,21 +23,10 @@ public:
 	Game_Setting* data = nullptr;
 };
 
-class Command
-{
-public:
-	void Show_Option();
-	void Show_Rank();
-	void Show_Help();
-	void New_Game();
-	void Load_Game();
-};
-
 class Game
 {
 public:
 	void Play_Game_1P();
 	void Play_Game_2P();
 };
-
 
