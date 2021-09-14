@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
-#include <conio.h> // kbhit()
+#include <conio.h> // _kbhit(),_getch(0
 #include <windows.h>
 #include "Func.h"
 #include "Class.h"
@@ -44,6 +44,7 @@ void Key_Input()
 
 void Cursor::Get_Cursor()
 {
+	/*
 	POINT cur;
 	HANDLE stdHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 	COORD pos;
@@ -57,7 +58,7 @@ void Cursor::Get_Cursor()
 		
 	}
 	SetConsoleCursorPosition(stdHandle, pos);
-
+	*/
 	/*
 	POINT cur;
 	while (1)

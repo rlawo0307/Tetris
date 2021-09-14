@@ -148,6 +148,7 @@
     <ClInclude Include="Class.h" />
     <ClInclude Include="Command.h" />
     <ClInclude Include="Func.h" />
+    <ClInclude Include="Game.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
