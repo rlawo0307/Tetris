@@ -3,7 +3,6 @@
 #include "Command.h"
 #include "Class.h"
 #include "Func.h"
-#include "Game.h"
 
 void Show_Option()
 {
@@ -30,19 +29,17 @@ void New_Game()
 	system("cls");
 	std::cout << "1P or 2P? : ";
 	std::cin >> str;
+	std::cout << str[0] << std::endl;
 	if (str == "1P")
 	{
 		Player player1 = Player();
-		Create_Player(player1, "player1");
-		Play_Game_1P();
+		Play_Game_1P(player1);
 	}
 	else
 	{
 		Player player1 = Player();
 		Player player2 = Player();
-		Create_Player(player1, "player1");
-		Create_Player(player2, "player2");
-		Play_Game_2P();
+		Play_Game_2P(player1, player2);
 	}
 }
 
@@ -54,15 +51,14 @@ void Load_Game()
 	//Play_Game_1P() or Play_Game_2P()
 }
 
-void Play_Game_1P()
+void Play_Game_1P(Player& p1)
 {
 	system("cls");
 	std::cout << "1P Start\n";
 	File_Open(GAMEBOX_1P_PATH);
-	
 }
 
-void Play_Game_2P()
+void Play_Game_2P(Player& p1, Player& p2)
 {
 	system("cls");
 	std::cout << "2P Start\n";
