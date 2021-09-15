@@ -3,6 +3,7 @@
 #include "Command.h"
 #include "Class.h"
 #include "Func.h"
+#include <windows.h> // Sleep()
 
 void Show_Option()
 {
@@ -56,6 +57,12 @@ void Play_Game_1P(Player& p1)
 	system("cls");
 	std::cout << "1P Start\n";
 	File_Open(GAMEBOX_1P_PATH);
+
+	while (1)
+	{
+		p1.data.Print_Board();
+		Sleep(1000);
+	}
 }
 
 void Play_Game_2P(Player& p1, Player& p2)
