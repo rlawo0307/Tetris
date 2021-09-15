@@ -54,14 +54,37 @@ void Load_Game()
 
 void Play_Game_1P(Player& p1)
 {
+	double speed = 1000 * p1.data.falling_speed;
+	bool game = true;
+	int i;
+
 	system("cls");
 	std::cout << "1P Start\n";
 	File_Open(GAMEBOX_1P_PATH);
 
-	while (1)
+	while (game)
 	{
-		p1.data.Print_Board();
-		Sleep(1000);
+		i = 0;
+		p1.data.Rand_Next_Block();
+		//Before reach bottom of borad
+		while(i <= BOARD_COL - CUR_BLOCK_COL)
+		{
+			//Before reach top block
+			if (p1.data.Check_Next_Line(i))
+			{
+				p1.data.Change_Board(i);
+				p1.data.Print_Board();
+				Sleep(speed);
+				i++;
+			}
+			else
+				break;
+		}
+		if (i == 0)
+		{
+			std::cout << "Game Over\n";
+			game = false;
+		}
 	}
 }
 

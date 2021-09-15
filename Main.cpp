@@ -15,6 +15,11 @@ int main()
 
 	//Cursor_Move(1,1);
 	//select menu
+
+	Player player1 = Player();
+	Play_Game_1P(player1);
+
+	/*
 	char key = ' ';
 	do
 	{
@@ -34,6 +39,7 @@ int main()
 		case 'e': break;
 		}
 	} while (!(key == 'n' || key == 'l'));
+	*/
 
 	return 0;
 }
