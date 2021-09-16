@@ -49,7 +49,7 @@ private:
 public:
 	Game()
 	{
-		falling_speed = 0.3;
+		falling_speed = 1.0;
 		i_next_block = 0;
 		memset(board, 0, sizeof(board));
 		/*
@@ -94,24 +94,37 @@ public:
 		}
 	}
 
-	void Change_Board(int cur_x, int cur_y, char key)
+	//void Change_Board(int cur_x, int cur_y, char key)
+	void Change_Board(int* cur_block_x, int* cur_block_y, char key)
 	{
-		int prev_x = cur_x, prev_y = cur_y;
-
 		if (key == 80) // DOWN
 		{
-			prev_y
+			std::cout << "down\n";
+			//clear last falling block
+			for (int i = 0; i < CUR_BLOCK_COL; i++)
+				for (int j = 0; j < CUR_BLOCK_ROW; j++)
+					if (cur_block[i][j] != 0)
+						board[CUR_BLOCK_Y + *cur_block_y + i][CUR_BLOCK_X + j] = 0;
+
+			(*cur_block_y)++;
+
+			//print current falling block
+			for (int i = 0; i < CUR_BLOCK_COL; i++)
+				for (int j = 0; j < CUR_BLOCK_ROW; j++)
+					if (cur_block[i][j] != 0)
+						board[CUR_BLOCK_Y + *cur_block_y + i][CUR_BLOCK_X + j] = cur_block[i][j];
 		}
 		else if (key == 75) // LEFT
 		{
-			prev
+			std::cout << "left\n";
 		}
 		else if (key == 77) // RIGHT
 		{
-
+			std::cout << "right\n";
 		}
 		//space 
 
+		/*
 		//clear last falling block
 		for (int i = 0; i < CUR_BLOCK_COL; i++)
 			for (int j = 0; j < CUR_BLOCK_ROW; j++)
@@ -123,12 +136,16 @@ public:
 			for (int j = 0; j < CUR_BLOCK_ROW; j++)
 				if (cur_block[i][j] != 0)
 					board[CUR_BLOCK_Y + cur_y + i][CUR_BLOCK_X + j] = cur_block[i][j];
+	*/
 	}
 
-	bool Check_Next_Line(int cur_y)
+	bool Check_Next_Line(int block_y)
 	{
+		int top_line = CUR_BLOCK_Y + block_y + 1+CUR_BLOCK_COL-1;
+
 		for (int i = 0; i < CUR_BLOCK_ROW; i++)
-			if (cur_block[CUR_BLOCK_COL - 1][i] != 0 && board[CUR_BLOCK_Y + cur_y + CUR_BLOCK_COL - 1][CUR_BLOCK_X + i] != 0)
+			if (cur_block[CUR_BLOCK_COL - 1][i] != 0 
+				&& board[top_line][CUR_BLOCK_X + i] != 0)
 				return false;
 		return true;
 	}
@@ -147,6 +164,8 @@ public:
 			}
 		}
 	}
+
+	
 
 	
 };
