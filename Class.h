@@ -2,7 +2,6 @@
 #include <iostream>
 #include <random>
 #include <string>
-//#include <vector>
 #include "Windows.h"
 #include "Func.h"
 
@@ -22,7 +21,7 @@
 #define C_BLOCK6 FOREGROUND_INTENSITY
 #define C_BLOCK7 FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_INTENSITY
 
-#define BOARD_COL 10
+#define BOARD_COL 20
 #define BOARD_ROW 10
 #define BOARD_X 5
 #define BOARD_Y 5
@@ -95,8 +94,24 @@ public:
 		}
 	}
 
-	void Change_Board(int cur_y)
+	void Change_Board(int cur_x, int cur_y, char key)
 	{
+		int prev_x = cur_x, prev_y = cur_y;
+
+		if (key == 80) // DOWN
+		{
+			prev_y
+		}
+		else if (key == 75) // LEFT
+		{
+			prev
+		}
+		else if (key == 77) // RIGHT
+		{
+
+		}
+		//space 
+
 		//clear last falling block
 		for (int i = 0; i < CUR_BLOCK_COL; i++)
 			for (int j = 0; j < CUR_BLOCK_ROW; j++)

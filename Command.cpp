@@ -66,13 +66,12 @@ void Play_Game_1P(Player& p1)
 	{
 		i = 0;
 		p1.data.Rand_Next_Block();
-		//Before reach bottom of borad
-		while(i <= BOARD_COL - CUR_BLOCK_COL)
+		while(i <= BOARD_COL - CUR_BLOCK_COL) //Before reach bottom of borad
 		{
-			//Before reach top block
-			if (p1.data.Check_Next_Line(i))
+			if (p1.data.Check_Next_Line(i)) //Before reach top block
 			{
 				p1.data.Change_Board(i);
+				Key_Input();
 				p1.data.Print_Board();
 				Sleep(speed);
 				i++;
