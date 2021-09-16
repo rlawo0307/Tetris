@@ -75,6 +75,7 @@ void Play_Game_1P(Player& p1)
 				int j = 0;
 				while (j++ < 10)
 				{
+					Sleep(speed/10);
 					if (_kbhit()) //while user not input key, game continue
 					{
 						key = _getch();
@@ -88,7 +89,6 @@ void Play_Game_1P(Player& p1)
 				}
 				p1.data.Change_Board(&block_x, &block_y, 80); // down
 				p1.data.Print_Board();
-				Sleep(speed);
 			}
 			else
 				break;

@@ -22,26 +22,6 @@ void File_Open(const std::string path)
 	ifs.close();
 }
 
-void Key_Input()
-{
-	int key;
-
-	//while (1)
-	//{
-		if (_kbhit()) //while user not input key, game continue
-		{
-			key = _getch();
-			switch(key)
-			{
-			//case 72:std::cout << "up\n"; break;
-			case 80:std::cout << "down\n"; break;
-			case 75:std::cout << "left\n"; break;
-			case 77:std::cout << "right\n"; break;
-			}
-		}
-	//}
-}
-
 void Cursor::Get_Cursor()
 {
 	/*

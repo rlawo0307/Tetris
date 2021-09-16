@@ -52,11 +52,6 @@ public:
 		falling_speed = 1.0;
 		i_next_block = 0;
 		memset(board, 0, sizeof(board));
-		/*
-		for (int i = 0; i < BOARD_COL; i++)
-			for (int j = 0; j < BOARD_ROW; j++)
-				board[i][j] = 0;
-		*/
 	}
 
 	double falling_speed;
@@ -75,7 +70,7 @@ public:
 
 		switch (i_next_block)
 		{
-		case 1: cur_block[0][0] = cur_block[1][0] = i_next_block; break;
+		case 1: cur_block[0][2] = cur_block[1][2] = i_next_block; break;
 		case 2: cur_block[0][2] = cur_block[1][0] = cur_block[1][1] = cur_block[1][2] = i_next_block; break;
 		case 3: cur_block[0][0] = cur_block[1][0] = cur_block[1][1] = cur_block[1][2] = i_next_block; break;
 		case 4: cur_block[0][1] = cur_block[1][0] = cur_block[1][1] = cur_block[1][2] = i_next_block; break;
@@ -94,35 +89,28 @@ public:
 		}
 	}
 
-	//void Change_Board(int cur_x, int cur_y, char key)
 	void Change_Board(int* cur_block_x, int* cur_block_y, char key)
 	{
-		if (key == 80) // DOWN
-		{
-			std::cout << "down\n";
-			//clear last falling block
-			for (int i = 0; i < CUR_BLOCK_COL; i++)
-				for (int j = 0; j < CUR_BLOCK_ROW; j++)
-					if (cur_block[i][j] != 0)
-						board[CUR_BLOCK_Y + *cur_block_y + i][CUR_BLOCK_X + j] = 0;
+		//clear current falling block
+		for (int i = 0; i < CUR_BLOCK_COL; i++)
+			for (int j = 0; j < CUR_BLOCK_ROW; j++)
+				if (cur_block[i][j] != 0)
+					board[CUR_BLOCK_Y + *cur_block_y + i][CUR_BLOCK_X + *cur_block_x + j] = 0;
 
-			(*cur_block_y)++;
-
-			//print current falling block
-			for (int i = 0; i < CUR_BLOCK_COL; i++)
-				for (int j = 0; j < CUR_BLOCK_ROW; j++)
-					if (cur_block[i][j] != 0)
-						board[CUR_BLOCK_Y + *cur_block_y + i][CUR_BLOCK_X + j] = cur_block[i][j];
-		}
-		else if (key == 75) // LEFT
+		switch(key)
 		{
-			std::cout << "left\n";
-		}
-		else if (key == 77) // RIGHT
-		{
-			std::cout << "right\n";
-		}
+		case 80: (*cur_block_y)++; break; //DOWN
+		//case 75: {if (*cur_block_x + CUR_BLOCK_ROW > 0)(*cur_block_x)--; break; } // LEFT
+		//case 77: (*cur_block_x)++; break; // RIGHT
 		//space 
+		}
+		
+		//change next falling block
+		for (int i = 0; i < CUR_BLOCK_COL; i++)
+			for (int j = 0; j < CUR_BLOCK_ROW; j++)
+				if (cur_block[i][j] != 0)
+					board[CUR_BLOCK_Y + *cur_block_y + i][CUR_BLOCK_X + *cur_block_x + j] = cur_block[i][j];
+
 
 		/*
 		//clear last falling block
@@ -164,10 +152,6 @@ public:
 			}
 		}
 	}
-
-	
-
-	
 };
 
 class Player
