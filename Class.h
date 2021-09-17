@@ -4,6 +4,7 @@
 #include <string>
 #include "Windows.h"
 #include "Func.h"
+#include <conio.h> // _kbhit(),_getch(0
 
 #define MAIN_SCREEN_PATH "./res/main_menu.txt"
 #define RANKING_SCREEN_PATH "./res/rank.txt"
@@ -28,8 +29,8 @@
 
 #define BLOCK_COL 4
 #define BLOCK_ROW 4
-#define BLOCK_X 0
-#define BLOCK_Y 0
+#define BLOCK_X 2
+#define BLOCK_Y -3
 
 //Func.cpp
 class Cursor
@@ -49,7 +50,7 @@ private:
 public:
 	Game()
 	{
-		falling_speed = 1.0;
+		falling_speed = 2.0;
 		i_next_block = 0;
 		memset(board, 0, sizeof(board));
 	}
@@ -77,53 +78,14 @@ public:
 		case 5: cur_block[2][2] = cur_block[2][3] = cur_block[3][2] = cur_block[3][3] = i_next_block; break;
 		case 6: cur_block[2][2] = cur_block[2][3] = cur_block[3][1] = cur_block[3][2] = i_next_block; break;
 		case 7: cur_block[2][1] = cur_block[2][2] = cur_block[3][2] = cur_block[3][3] = i_next_block; break;
-		/*
-		case 1: cur_block[0][0] = cur_block[1][0] = cur_block[2][0] = cur_block[3][0] = i_next_block; break;
-		case 2: cur_block[2][3] = cur_block[3][1] = cur_block[3][2] = cur_block[3][3] = i_next_block; break;
-		case 3: cur_block[2][1] = cur_block[3][1] = cur_block[3][2] = cur_block[3][3] = i_next_block; break;
-		case 4: cur_block[2][2] = cur_block[3][1] = cur_block[3][2] = cur_block[3][3] = i_next_block; break;
-		case 5: cur_block[2][2] = cur_block[2][3] = cur_block[3][2] = cur_block[3][3] = i_next_block; break;
-		case 6: cur_block[2][2] = cur_block[2][3] = cur_block[3][1] = cur_block[3][2] = i_next_block; break;
-		case 7: cur_block[2][1] = cur_block[2][2] = cur_block[3][2] = cur_block[3][3] = i_next_block; break;
-		*/
 		}
-	}
 
-	void Change_Board(int* cur_block_x, int* cur_block_y, char key)
-	{
-		//clear current falling block
 		for (int i = 0; i < BLOCK_COL; i++)
 			for (int j = 0; j < BLOCK_ROW; j++)
-				if (cur_block[i][j] != 0)
-					board[*cur_block_y + i][*cur_block_x + j] = 0;
-
-		switch(key)
-		{
-		case 80: (*cur_block_y)++; break; //DOWN
-		case 75: (*cur_block_x)--; break; // LEFT
-		case 77: (*cur_block_x)++; break; // RIGHT
-		//space 
-		}
-		
-		//change next falling block
-		for (int i = 0; i < BLOCK_COL; i++)
-			for (int j = 0; j < BLOCK_ROW; j++)
-				if (cur_block[i][j] != 0)
-					board[*cur_block_y + i][*cur_block_x + j] = cur_block[i][j];
+				if(BLOCK_Y+i >= 0)
+					board[BLOCK_Y + i][BLOCK_X + j] = cur_block[i][j];
 		
 		Print_Board();
-	}
-
-	bool Check_Game_Over(int block_x, int block_y)
-	{
-		/*
-		int block_start_row = -1, block_start_col = -1;
-
-		//Find_Start_Index(&block_start_row, &block_start_col);
-		if (block_start_row == 0)
-			return true;
-		*/
-		return false;
 	}
 
 	bool Check_Next_Line(int block_x, int block_y)
@@ -168,6 +130,31 @@ public:
 		return true;
 	}
 
+	void Change_Board(int* cur_block_x, int* cur_block_y, char key)
+	{
+		//clear current falling block
+		for (int i = 0; i < BLOCK_COL; i++)
+			for (int j = 0; j < BLOCK_ROW; j++)
+				if (cur_block[i][j] != 0)
+					board[*cur_block_y + i][*cur_block_x + j] = 0;
+
+		switch (key)
+		{
+		case 80: (*cur_block_y)++; break; //DOWN
+		case 75: (*cur_block_x)--; break; // LEFT
+		case 77: (*cur_block_x)++; break; // RIGHT
+		//space 
+		}
+
+		//change next falling block
+		for (int i = 0; i < BLOCK_COL; i++)
+			for (int j = 0; j < BLOCK_ROW; j++)
+				if (cur_block[i][j] != 0)
+					board[*cur_block_y + i][*cur_block_x + j] = cur_block[i][j];
+
+		Print_Board();
+	}
+
 	void Print_Board()
 	{
 		for (int i = 0; i < BOARD_COL; i++)
@@ -181,6 +168,23 @@ public:
 				std::cout << "бс";
 			}
 		}
+	}
+
+	bool Check_Game_Over(int block_x, int block_y)
+	{
+		for (int i = 0; i < BLOCK_COL; i++)
+			for (int j = 0; j < BLOCK_ROW; j++)
+				if (cur_block[i][j] != 0)
+					if (block_y + i <= 0)
+						return true;
+					else
+						return false;
+	}
+
+	void Flush()
+	{
+		while(_kbhit())
+			_getch();
 	}
 };
 
@@ -205,6 +209,8 @@ public:
 		std::cin >> str;
 		return str;
 	}
+
+
 };
 
 

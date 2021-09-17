@@ -55,7 +55,7 @@ void Load_Game()
 
 void Play_Game_1P(Player& p1)
 {
-	double speed = 1000 * p1.data.falling_speed;
+	double speed = 1000 * (1 / p1.data.falling_speed);
 	char key = ' ';
 
 	system("cls");
@@ -66,7 +66,6 @@ void Play_Game_1P(Player& p1)
 	{
 		int block_x = BLOCK_X, block_y = BLOCK_Y;
 		p1.data.Rand_Next_Block();
-		p1.data.Print_Board();
 		while(1)
 		{
 			int j = 0;
@@ -78,7 +77,7 @@ void Play_Game_1P(Player& p1)
 					key = _getch();
 					switch(key)
 					{
-					case 80: if (p1.data.Check_Next_Line(block_x, block_y))p1.data.Change_Board(&block_x, &block_y, key); break;
+					case 80: if (p1.data.Check_Next_Line(block_x, block_y))p1.data.Change_Board(&block_x, &block_y, key); else { p1.data.Flush(); j = 10; } break;
 					case 75: if (p1.data.Check_Left_Side(block_x, block_y))p1.data.Change_Board(&block_x, &block_y, key); break;
 					case 77: if (p1.data.Check_Right_Side(block_x, block_y))p1.data.Change_Board(&block_x, &block_y, key); break;
 					//sapce
@@ -88,12 +87,14 @@ void Play_Game_1P(Player& p1)
 			if (p1.data.Check_Next_Line(block_x, block_y))
 				p1.data.Change_Board(&block_x, &block_y, 80); // down
 			else
+			{
+				if (p1.data.Check_Game_Over(block_x, block_y))
+				{
+					std::cout << "Game Over\n";
+					return;
+				}
 				break;
-		}
-		if(p1.data.Check_Game_Over(block_x, block_y))
-		{
-			std::cout << "Game Over\n";
-			break;
+			}
 		}
 	}
 }
