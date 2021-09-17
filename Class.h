@@ -144,7 +144,7 @@ public:
 		//reach top of block
 		for (int i = 0; i < BLOCK_ROW; i++)
 			if (cur_block[BLOCK_COL - 1][i] != 0
-				&& board[block_y + BLOCK_COL][block_x + i] != 0)
+				&& board[block_y + BLOCK_COL][block_x + i] != 0)kjh
 				return false;
 		return true;
 	}
