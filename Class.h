@@ -71,9 +71,9 @@ public:
 		switch (i_next_block)
 		{
 		case 1: cur_block[0][0] = cur_block[1][0] = cur_block[2][0] = cur_block[3][0] = i_next_block; break;
-		case 2: cur_block[2][3] = cur_block[3][1] = cur_block[3][2] = cur_block[3][2] = i_next_block; break;
-		case 3: cur_block[2][1] = cur_block[3][1] = cur_block[3][2] = cur_block[3][2] = i_next_block; break;
-		case 4: cur_block[2][2] = cur_block[3][1] = cur_block[3][2] = cur_block[3][2] = i_next_block; break;
+		case 2: cur_block[2][3] = cur_block[3][1] = cur_block[3][2] = cur_block[3][3] = i_next_block; break;
+		case 3: cur_block[2][1] = cur_block[3][1] = cur_block[3][2] = cur_block[3][3] = i_next_block; break;
+		case 4: cur_block[2][2] = cur_block[3][1] = cur_block[3][2] = cur_block[3][3] = i_next_block; break;
 		case 5: cur_block[2][2] = cur_block[2][3] = cur_block[3][2] = cur_block[3][3] = i_next_block; break;
 		case 6: cur_block[2][2] = cur_block[2][3] = cur_block[3][1] = cur_block[3][2] = i_next_block; break;
 		case 7: cur_block[2][1] = cur_block[2][2] = cur_block[3][2] = cur_block[3][3] = i_next_block; break;
@@ -100,8 +100,8 @@ public:
 		switch(key)
 		{
 		case 80: (*cur_block_y)++; break; //DOWN
-		//case 75: (*cur_block_x)--; break; // LEFT
-		//case 77: (*cur_block_x)++; break; // RIGHT
+		case 75: (*cur_block_x)--; break; // LEFT
+		case 77: (*cur_block_x)++; break; // RIGHT
 		//space 
 		}
 		
@@ -110,28 +110,19 @@ public:
 			for (int j = 0; j < BLOCK_ROW; j++)
 				if (cur_block[i][j] != 0)
 					board[*cur_block_y + i][*cur_block_x + j] = cur_block[i][j];
+		
 		Print_Board();
-		/*
-		//clear last falling block
-		for (int i = 0; i < CUR_BLOCK_COL; i++)
-			for (int j = 0; j < CUR_BLOCK_ROW; j++)
-				if(cur_block[i][j] != 0)
-					board[CUR_BLOCK_Y + cur_y + i-1][CUR_BLOCK_X + j] = 0;
-
-		//print current falling block
-		for (int i = 0; i < CUR_BLOCK_COL; i++)
-			for (int j = 0; j < CUR_BLOCK_ROW; j++)
-				if (cur_block[i][j] != 0)
-					board[CUR_BLOCK_Y + cur_y + i][CUR_BLOCK_X + j] = cur_block[i][j];
-	*/
 	}
+
 	bool Check_Game_Over(int block_x, int block_y)
 	{
+		/*
 		int block_start_row = -1, block_start_col = -1;
 
-		Find_Start_Index(&block_start_row, &block_start_col);
+		//Find_Start_Index(&block_start_row, &block_start_col);
 		if (block_start_row == 0)
 			return true;
+		*/
 		return false;
 	}
 
@@ -144,46 +135,39 @@ public:
 		//reach top of block
 		for (int i = 0; i < BLOCK_ROW; i++)
 			if (cur_block[BLOCK_COL - 1][i] != 0
-				&& board[block_y + BLOCK_COL][block_x + i] != 0)kjh
+				&& board[block_y + BLOCK_COL][block_x + i] != 0)
 				return false;
 		return true;
 	}
 
-	void Find_Start_Index(int* block_start_row, int* block_start_col)
+	bool Check_Left_Side(int block_x, int block_y)
 	{
 		for (int i = 0; i < BLOCK_COL; i++)
 			for (int j = 0; j < BLOCK_ROW; j++)
 				if (cur_block[i][j] != 0)
 				{
-					*block_start_row = i;
-					*block_start_col = j;
-					return;
+					if (block_x + j == 0 //reach end of board
+						|| board[block_y + i][block_x + j - 1] != 0) // reach left of block
+						return false;
+					break;
 				}
-	}
-
-	/*
-	bool Check_Left_Side(int block_x, int block_y)
-	//bool Check_Left_Side(int cur_block[][CUR_BLOCK_ROW])
-	{
-		int block_start_row = -1, block_start_col = -1;
-
-		Find_Start_Index(&block_start_row, &block_start_col);
-
-		if (block_x + block_start_col <= BOARD_X) //move to outside of board
-			return false;
-
-		for (int i = 0; i < CUR_BLOCK_ROW; i++)
-			if (cur_block[CUR_BLOCK_COL - 1][i] != 0
-				&& board[top_line][CUR_BLOCK_X + i] != 0)
-				return false;
 		return true;
 	}
 
-	bool Check_Right_Side()
+	bool Check_Right_Side(int block_x, int block_y)
 	{
-
+		for (int i = 0; i<BLOCK_COL; i++)
+			for (int j = BLOCK_ROW - 1; j >= 0; j--)
+				if (cur_block[i][j] != 0)
+				{
+					if (block_x + j ==  BOARD_ROW-1// reach end of board
+						|| board[block_y + i][block_x + j + 1] != 0)
+						return false;
+					break;
+				}
+		return true;
 	}
-	*/
+
 	void Print_Board()
 	{
 		for (int i = 0; i < BOARD_COL; i++)
