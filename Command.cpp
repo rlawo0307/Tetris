@@ -71,16 +71,17 @@ void Play_Game_1P(Player& p1)
 			int j = 0;
 			while (j++ < 10)
 			{
-				Sleep(speed/10);
+				Sleep(speed / 10);
 				if (_kbhit()) //while user not input key, game continue
 				{
 					key = _getch();
-					switch(key)
+					switch (key)
 					{
+					case 72: while (p1.data.Check_Next_Line(block_x, block_y)) p1.data.Change_Board(&block_x, &block_y, 80); break;
 					case 80: if (p1.data.Check_Next_Line(block_x, block_y))p1.data.Change_Board(&block_x, &block_y, key); else { p1.data.Flush(); j = 10; } break;
 					case 75: if (p1.data.Check_Left_Side(block_x, block_y))p1.data.Change_Board(&block_x, &block_y, key); break;
 					case 77: if (p1.data.Check_Right_Side(block_x, block_y))p1.data.Change_Board(&block_x, &block_y, key); break;
-					//sapce
+						//sapce
 					}
 				}
 			}

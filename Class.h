@@ -98,7 +98,10 @@ public:
 		for (int i = 0; i < BLOCK_ROW; i++)
 			if (cur_block[BLOCK_COL - 1][i] != 0
 				&& board[block_y + BLOCK_COL][block_x + i] != 0)
+			{
+				//Make_Line(block_x, &block_y);
 				return false;
+			}
 		return true;
 	}
 
@@ -140,6 +143,7 @@ public:
 
 		switch (key)
 		{
+		case 72: 
 		case 80: (*cur_block_y)++; break; //DOWN
 		case 75: (*cur_block_x)--; break; // LEFT
 		case 77: (*cur_block_x)++; break; // RIGHT
@@ -153,6 +157,28 @@ public:
 					board[*cur_block_y + i][*cur_block_x + j] = cur_block[i][j];
 
 		Print_Board();
+	}
+
+	void Make_Line(int block_x, int* block_y)
+	{
+		int res, cnt=0;
+
+		for (int i = 0; i < BLOCK_COL; i++)
+		{
+			res = true;
+			for (int j = 0; j < BOARD_ROW; j++)
+				if (board[*block_y + i][j] == 0)
+					res = false;
+			if (res)
+			{
+				//update score
+				cnt++;
+				for (int k = *block_y + i - 1; k >= 0; k--)
+					for (int l = 0; l < BOARD_ROW; l++)
+						board[k][l] = board[k - 1][l];
+			}
+		}
+		(*block_y) -= cnt;
 	}
 
 	void Print_Board()
