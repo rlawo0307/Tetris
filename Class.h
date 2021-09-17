@@ -23,13 +23,13 @@
 
 #define BOARD_COL 20
 #define BOARD_ROW 10
-#define BOARD_X 5
-#define BOARD_Y 5
+#define BOARD_POS_X 5
+#define BOARD_POS_Y 5
 
-#define CUR_BLOCK_COL 2
-#define CUR_BLOCK_ROW 3
-#define CUR_BLOCK_X 2
-#define CUR_BLOCK_Y 0
+#define BLOCK_COL 4
+#define BLOCK_ROW 4
+#define BLOCK_X 0
+#define BLOCK_Y 0
 
 //Func.cpp
 class Cursor
@@ -57,7 +57,7 @@ public:
 	double falling_speed;
 	int i_next_block; //index of next block
 	int board[BOARD_COL][BOARD_ROW];
-	int cur_block[CUR_BLOCK_COL][CUR_BLOCK_ROW];
+	int cur_block[BLOCK_COL][BLOCK_ROW];
 
 	void Rand_Next_Block()
 	{
@@ -70,13 +70,13 @@ public:
 
 		switch (i_next_block)
 		{
-		case 1: cur_block[0][2] = cur_block[1][2] = i_next_block; break;
-		case 2: cur_block[0][2] = cur_block[1][0] = cur_block[1][1] = cur_block[1][2] = i_next_block; break;
-		case 3: cur_block[0][0] = cur_block[1][0] = cur_block[1][1] = cur_block[1][2] = i_next_block; break;
-		case 4: cur_block[0][1] = cur_block[1][0] = cur_block[1][1] = cur_block[1][2] = i_next_block; break;
-		case 5: cur_block[0][1] = cur_block[0][2] = cur_block[1][1] = cur_block[1][2] = i_next_block; break;
-		case 6: cur_block[0][1] = cur_block[0][2] = cur_block[1][0] = cur_block[1][1] = i_next_block; break;
-		case 7: cur_block[0][0] = cur_block[0][1] = cur_block[1][1] = cur_block[1][2] = i_next_block; break;
+		case 1: cur_block[0][0] = cur_block[1][0] = cur_block[2][0] = cur_block[3][0] = i_next_block; break;
+		case 2: cur_block[2][3] = cur_block[3][1] = cur_block[3][2] = cur_block[3][2] = i_next_block; break;
+		case 3: cur_block[2][1] = cur_block[3][1] = cur_block[3][2] = cur_block[3][2] = i_next_block; break;
+		case 4: cur_block[2][2] = cur_block[3][1] = cur_block[3][2] = cur_block[3][2] = i_next_block; break;
+		case 5: cur_block[2][2] = cur_block[2][3] = cur_block[3][2] = cur_block[3][3] = i_next_block; break;
+		case 6: cur_block[2][2] = cur_block[2][3] = cur_block[3][1] = cur_block[3][2] = i_next_block; break;
+		case 7: cur_block[2][1] = cur_block[2][2] = cur_block[3][2] = cur_block[3][3] = i_next_block; break;
 		/*
 		case 1: cur_block[0][0] = cur_block[1][0] = cur_block[2][0] = cur_block[3][0] = i_next_block; break;
 		case 2: cur_block[2][3] = cur_block[3][1] = cur_block[3][2] = cur_block[3][3] = i_next_block; break;
@@ -92,26 +92,25 @@ public:
 	void Change_Board(int* cur_block_x, int* cur_block_y, char key)
 	{
 		//clear current falling block
-		for (int i = 0; i < CUR_BLOCK_COL; i++)
-			for (int j = 0; j < CUR_BLOCK_ROW; j++)
+		for (int i = 0; i < BLOCK_COL; i++)
+			for (int j = 0; j < BLOCK_ROW; j++)
 				if (cur_block[i][j] != 0)
-					board[CUR_BLOCK_Y + *cur_block_y + i][CUR_BLOCK_X + *cur_block_x + j] = 0;
+					board[*cur_block_y + i][*cur_block_x + j] = 0;
 
 		switch(key)
 		{
 		case 80: (*cur_block_y)++; break; //DOWN
-		//case 75: {if (*cur_block_x + CUR_BLOCK_ROW > 0)(*cur_block_x)--; break; } // LEFT
+		//case 75: (*cur_block_x)--; break; // LEFT
 		//case 77: (*cur_block_x)++; break; // RIGHT
 		//space 
 		}
 		
 		//change next falling block
-		for (int i = 0; i < CUR_BLOCK_COL; i++)
-			for (int j = 0; j < CUR_BLOCK_ROW; j++)
+		for (int i = 0; i < BLOCK_COL; i++)
+			for (int j = 0; j < BLOCK_ROW; j++)
 				if (cur_block[i][j] != 0)
-					board[CUR_BLOCK_Y + *cur_block_y + i][CUR_BLOCK_X + *cur_block_x + j] = cur_block[i][j];
-
-
+					board[*cur_block_y + i][*cur_block_x + j] = cur_block[i][j];
+		Print_Board();
 		/*
 		//clear last falling block
 		for (int i = 0; i < CUR_BLOCK_COL; i++)
@@ -126,25 +125,72 @@ public:
 					board[CUR_BLOCK_Y + cur_y + i][CUR_BLOCK_X + j] = cur_block[i][j];
 	*/
 	}
-
-	bool Check_Next_Line(int block_y)
+	bool Check_Game_Over(int block_x, int block_y)
 	{
-		int top_line = CUR_BLOCK_Y + block_y + 1+CUR_BLOCK_COL-1;
+		int block_start_row = -1, block_start_col = -1;
+
+		Find_Start_Index(&block_start_row, &block_start_col);
+		if (block_start_row == 0)
+			return true;
+		return false;
+	}
+
+	bool Check_Next_Line(int block_x, int block_y)
+	{
+		//reach end of board
+		if (block_y + BLOCK_COL == BOARD_COL)
+			return false;
+
+		//reach top of block
+		for (int i = 0; i < BLOCK_ROW; i++)
+			if (cur_block[BLOCK_COL - 1][i] != 0
+				&& board[block_y + BLOCK_COL][block_x + i] != 0)
+				return false;
+		return true;
+	}
+
+	void Find_Start_Index(int* block_start_row, int* block_start_col)
+	{
+		for (int i = 0; i < BLOCK_COL; i++)
+			for (int j = 0; j < BLOCK_ROW; j++)
+				if (cur_block[i][j] != 0)
+				{
+					*block_start_row = i;
+					*block_start_col = j;
+					return;
+				}
+	}
+
+	/*
+	bool Check_Left_Side(int block_x, int block_y)
+	//bool Check_Left_Side(int cur_block[][CUR_BLOCK_ROW])
+	{
+		int block_start_row = -1, block_start_col = -1;
+
+		Find_Start_Index(&block_start_row, &block_start_col);
+
+		if (block_x + block_start_col <= BOARD_X) //move to outside of board
+			return false;
 
 		for (int i = 0; i < CUR_BLOCK_ROW; i++)
-			if (cur_block[CUR_BLOCK_COL - 1][i] != 0 
+			if (cur_block[CUR_BLOCK_COL - 1][i] != 0
 				&& board[top_line][CUR_BLOCK_X + i] != 0)
 				return false;
 		return true;
 	}
 
+	bool Check_Right_Side()
+	{
+
+	}
+	*/
 	void Print_Board()
 	{
 		for (int i = 0; i < BOARD_COL; i++)
 		{
 			if (i == 0 || i == BOARD_COL - 1)
 				std::cout << "************************************\n";
-			Cursor_Move(BOARD_X, BOARD_Y+i);
+			Cursor_Move(BOARD_POS_X, BOARD_POS_Y+i);
 			for (int j = 0; j < BOARD_ROW; j++)
 			{
 				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color[board[i][j]]);

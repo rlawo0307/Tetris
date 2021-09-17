@@ -56,50 +56,45 @@ void Load_Game()
 void Play_Game_1P(Player& p1)
 {
 	double speed = 1000 * p1.data.falling_speed;
-	bool game = true;
 	char key = ' ';
 
 	system("cls");
 	std::cout << "1P Start\n";
 	File_Open(GAMEBOX_1P_PATH);
 
-	while (game)
+	while (1)
 	{
-		int block_x = CUR_BLOCK_X, block_y = CUR_BLOCK_Y;
+		int block_x = BLOCK_X, block_y = BLOCK_Y;
 		p1.data.Rand_Next_Block();
-		while(block_y <= BOARD_COL - CUR_BLOCK_COL-1) //Before reach bottom of borad
+		p1.data.Print_Board();
+		while(1)
 		{
-			std::cout << block_y << std::endl;
-			if (p1.data.Check_Next_Line(block_y)) //Before reach top block
+			int j = 0;
+			while (j++ < 10)
 			{
-				int j = 0;
-				while (j++ < 10)
+				Sleep(speed/10);
+				if (_kbhit()) //while user not input key, game continue
 				{
-					Sleep(speed/10);
-					if (_kbhit()) //while user not input key, game continue
+					key = _getch();
+					switch(key)
 					{
-						key = _getch();
-						if (key == 80 || key == 75 || key == 77)
-						{
-							p1.data.Change_Board(&block_x, &block_y, key);
-							p1.data.Print_Board();
-							std::cin.clear();
-						}
+					case 80: if (p1.data.Check_Next_Line(block_x, block_y))p1.data.Change_Board(&block_x, &block_y, key); break;
+					case 75: break;
+					case 77: break;
+					//sapce
 					}
 				}
-				p1.data.Change_Board(&block_x, &block_y, 80); // down
-				p1.data.Print_Board();
 			}
+			if (p1.data.Check_Next_Line(block_x, block_y))
+				p1.data.Change_Board(&block_x, &block_y, 80); // down
 			else
 				break;
 		}
-		/*
-		if (i == 0)
+		if(p1.data.Check_Game_Over(block_x, block_y))
 		{
 			std::cout << "Game Over\n";
-			game = false;
+			break;
 		}
-		*/
 	}
 }
 
