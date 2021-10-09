@@ -59,13 +59,14 @@ void Play_Game_1P(Player& p1)
 	char key = ' ';
 
 	system("cls");
-	std::cout << "1P Start\n";
-	File_Open(GAMEBOX_1P_PATH);
+	p1.data.Init_Board();
+	//File_Open(GAMEBOX_1P_PATH);
 
-	while (1)
+	while (p1.data.top > 0)
 	{
 		int block_x = BLOCK_X, block_y = BLOCK_Y;
 		p1.data.Rand_Next_Block();
+
 		while(1)
 		{
 			int j = 0;
@@ -78,7 +79,7 @@ void Play_Game_1P(Player& p1)
 					switch (key)
 					{
 					case 72: while (p1.data.Check_Next_Line(block_x, block_y)) p1.data.Change_Board(&block_x, &block_y, 80); break;
-					case 80: if (p1.data.Check_Next_Line(block_x, block_y))p1.data.Change_Board(&block_x, &block_y, key); else { p1.data.Flush(); j = 10; } break;
+					case 80: if (p1.data.Check_Next_Line(block_x, block_y))p1.data.Change_Board(&block_x, &block_y, key); break;
 					case 75: if (p1.data.Check_Left_Side(block_x, block_y))p1.data.Change_Board(&block_x, &block_y, key); break;
 					case 77: if (p1.data.Check_Right_Side(block_x, block_y))p1.data.Change_Board(&block_x, &block_y, key); break;
 						//sapce
@@ -86,18 +87,19 @@ void Play_Game_1P(Player& p1)
 				}
 			}
 			if (p1.data.Check_Next_Line(block_x, block_y))
+			{
 				p1.data.Change_Board(&block_x, &block_y, 80); // down
+				Sleep(speed);
+			}
 			else
 			{
-				if (p1.data.Check_Game_Over(block_x, block_y))
-				{
-					std::cout << "Game Over\n";
-					return;
-				}
+				p1.data.Updata_Top();
+				std::cout << p1.data.top << std::endl;
 				break;
 			}
 		}
 	}
+	std::cout << "Game Over\n";
 }
 
 void Play_Game_2P(Player& p1, Player& p2)

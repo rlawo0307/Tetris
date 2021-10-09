@@ -13,14 +13,14 @@
 #define GAMEBOX_1P_PATH "./res/gamebox_1P.txt"
 #define GAMEBOX_2P_PATH "./res/gamebox_2P.txt"
 
-#define C_EMPTY FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_INTENSITY
-#define C_BLOCK1 FOREGROUND_RED
-#define C_BLOCK2 FOREGROUND_GREEN
-#define C_BLOCK3 FOREGROUND_BLUE
-#define C_BLOCK4 FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY
-#define C_BLOCK5 FOREGROUND_BLUE | FOREGROUND_GREEN
-#define C_BLOCK6 FOREGROUND_INTENSITY
-#define C_BLOCK7 FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_INTENSITY
+#define C_EMPTY 15 //white
+#define C_BLOCK1 1 //blue
+#define C_BLOCK2 2 //green
+#define C_BLOCK3 3 //cyan
+#define C_BLOCK4 4 //red
+#define C_BLOCK5 5 //magenta
+#define C_BLOCK6 6 //brown
+#define C_BLOCK7 7 // darkgray
 
 #define BOARD_COL 20
 #define BOARD_ROW 10
@@ -45,12 +45,10 @@ public:
 
 class Game
 {
-private:
-	int color[8] = { C_EMPTY , C_BLOCK1, C_BLOCK2, C_BLOCK3, C_BLOCK4, C_BLOCK5, C_BLOCK6 ,C_BLOCK7 };
 public:
 	Game()
 	{
-		falling_speed = 2.0;
+		falling_speed = 4.0;
 		i_next_block = 0;
 		memset(board, 0, sizeof(board));
 	}
@@ -59,6 +57,23 @@ public:
 	int i_next_block; //index of next block
 	int board[BOARD_COL][BOARD_ROW];
 	int cur_block[BLOCK_COL][BLOCK_ROW];
+	int top = BOARD_COL-1;
+
+	void Init_Board()
+	{
+		for (int i = 0; i < BOARD_COL; i++)
+			for (int j = 0; j < BOARD_ROW; j++)
+				board[i][j] = C_EMPTY;
+
+		Print_Board();
+	}
+
+	void Init_Cur_Block()
+	{
+		for (int i = 0; i < BLOCK_COL; i++)
+			for (int j = 0; j < BLOCK_ROW; j++)
+				cur_block[i][j] = C_EMPTY;
+	}
 
 	void Rand_Next_Block()
 	{
@@ -67,7 +82,7 @@ public:
 		std::uniform_int_distribution<int> dis(1, 7);
 		i_next_block = dis(gen);
 
-		memset(cur_block, 0, sizeof(cur_block));
+		Init_Cur_Block();
 
 		switch (i_next_block)
 		{
@@ -82,26 +97,21 @@ public:
 
 		for (int i = 0; i < BLOCK_COL; i++)
 			for (int j = 0; j < BLOCK_ROW; j++)
-				if(BLOCK_Y+i >= 0)
-					board[BLOCK_Y + i][BLOCK_X + j] = cur_block[i][j];
+				if (BLOCK_Y + i >= 0)
+						board[BLOCK_Y + i][BLOCK_X + j] = cur_block[i][j];
 		
 		Print_Board();
 	}
 
 	bool Check_Next_Line(int block_x, int block_y)
 	{
-		//reach end of board
+		//reach bottom
 		if (block_y + BLOCK_COL == BOARD_COL)
 			return false;
-
-		//reach top of block
+		//reach other block
 		for (int i = 0; i < BLOCK_ROW; i++)
-			if (cur_block[BLOCK_COL - 1][i] != 0
-				&& board[block_y + BLOCK_COL][block_x + i] != 0)
-			{
-				//Make_Line(block_x, &block_y);
+			if (cur_block[BLOCK_COL - 1][i] != C_EMPTY && board[block_y + BLOCK_COL][block_x + i] != C_EMPTY)
 				return false;
-			}
 		return true;
 	}
 
@@ -109,10 +119,10 @@ public:
 	{
 		for (int i = 0; i < BLOCK_COL; i++)
 			for (int j = 0; j < BLOCK_ROW; j++)
-				if (cur_block[i][j] != 0)
+				if (cur_block[i][j] != C_EMPTY)
 				{
 					if (block_x + j == 0 //reach end of board
-						|| board[block_y + i][block_x + j - 1] != 0) // reach left of block
+						|| board[block_y + i][block_x + j - 1] != C_EMPTY) // reach other block
 						return false;
 					break;
 				}
@@ -123,10 +133,10 @@ public:
 	{
 		for (int i = 0; i<BLOCK_COL; i++)
 			for (int j = BLOCK_ROW - 1; j >= 0; j--)
-				if (cur_block[i][j] != 0)
+				if (cur_block[i][j] != C_EMPTY)
 				{
 					if (block_x + j ==  BOARD_ROW-1// reach end of board
-						|| board[block_y + i][block_x + j + 1] != 0)
+						|| board[block_y + i][block_x + j + 1] != C_EMPTY)
 						return false;
 					break;
 				}
@@ -135,82 +145,57 @@ public:
 
 	void Change_Board(int* cur_block_x, int* cur_block_y, char key)
 	{
-		//clear current falling block
+		int prev_block_x = *cur_block_x, prev_block_y = *cur_block_y;
+		int next_block_x = *cur_block_x, next_block_y = *cur_block_y;
+
+		//clear prev block
 		for (int i = 0; i < BLOCK_COL; i++)
 			for (int j = 0; j < BLOCK_ROW; j++)
-				if (cur_block[i][j] != 0)
-					board[*cur_block_y + i][*cur_block_x + j] = 0;
+				if (cur_block[i][j] != C_EMPTY)
+					board[prev_block_y + i][prev_block_x + j] = C_EMPTY;
 
 		switch (key)
 		{
 		case 72: 
-		case 80: (*cur_block_y)++; break; //DOWN
-		case 75: (*cur_block_x)--; break; // LEFT
-		case 77: (*cur_block_x)++; break; // RIGHT
+		case 80: next_block_y++; break; //DOWN
+		case 75: next_block_x--; break; // LEFT
+		case 77: next_block_x++; break; // RIGHT
 		//space 
 		}
 
-		//change next falling block
+		//change next block
 		for (int i = 0; i < BLOCK_COL; i++)
 			for (int j = 0; j < BLOCK_ROW; j++)
-				if (cur_block[i][j] != 0)
-					board[*cur_block_y + i][*cur_block_x + j] = cur_block[i][j];
+				if (cur_block[i][j] != C_EMPTY)
+					board[next_block_y + i][next_block_x + j] = cur_block[i][j];
 
+		*cur_block_x = next_block_x;
+		*cur_block_y = next_block_y;
 		Print_Board();
-	}
-
-	void Make_Line(int block_x, int* block_y)
-	{
-		int res, cnt=0;
-
-		for (int i = 0; i < BLOCK_COL; i++)
-		{
-			res = true;
-			for (int j = 0; j < BOARD_ROW; j++)
-				if (board[*block_y + i][j] == 0)
-					res = false;
-			if (res)
-			{
-				//update score
-				cnt++;
-				for (int k = *block_y + i - 1; k >= 0; k--)
-					for (int l = 0; l < BOARD_ROW; l++)
-						board[k][l] = board[k - 1][l];
-			}
-		}
-		(*block_y) -= cnt;
 	}
 
 	void Print_Board()
 	{
 		for (int i = 0; i < BOARD_COL; i++)
 		{
-			if (i == 0 || i == BOARD_COL - 1)
-				std::cout << "************************************\n";
 			Cursor_Move(BOARD_POS_X, BOARD_POS_Y+i);
 			for (int j = 0; j < BOARD_ROW; j++)
 			{
-				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color[board[i][j]]);
+				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), board[i][j]);
 				std::cout << "бс";
 			}
 		}
 	}
 
-	bool Check_Game_Over(int block_x, int block_y)
+	void Updata_Top()
 	{
-		for (int i = 0; i < BLOCK_COL; i++)
-			for (int j = 0; j < BLOCK_ROW; j++)
-				if (cur_block[i][j] != 0)
-					if (block_y + i <= 0)
-						return true;
-					else
-						return false;
-	}
-
-	void Flush()
-	{
-		while(_kbhit())
-			_getch();
+		for (int i = 0; i < BOARD_COL; i++)
+			for (int j = 0; j < BOARD_ROW; j++)
+				if (board[i][j] != C_EMPTY && top > i)
+				{
+					top = i;
+					return;
+				}
 	}
 };
 
@@ -235,8 +220,6 @@ public:
 		std::cin >> str;
 		return str;
 	}
-
-
 };
 
 
