@@ -55,17 +55,17 @@ void Load_Game()
 
 void Play_Game_1P(Player& p1)
 {
-	double speed = 1000 * (1 / p1.data.falling_speed);
+	double speed = p1.gm.Cal_Speed();
 	char key = ' ';
 
 	system("cls");
-	p1.data.Init_Board();
+	p1.gm.Init_Board();
 	//File_Open(GAMEBOX_1P_PATH);
 
-	while (p1.data.top > 0)
+	while (p1.gm.Game_Over())
 	{
 		int block_x = BLOCK_X, block_y = BLOCK_Y;
-		p1.data.Rand_Next_Block();
+		p1.gm.Rand_Next_Block();
 
 		while(1)
 		{
@@ -78,23 +78,22 @@ void Play_Game_1P(Player& p1)
 					key = _getch();
 					switch (key)
 					{
-					case 72: while (p1.data.Check_Next_Line(block_x, block_y)) p1.data.Change_Board(&block_x, &block_y, 80); break;
-					case 80: if (p1.data.Check_Next_Line(block_x, block_y))p1.data.Change_Board(&block_x, &block_y, key); break;
-					case 75: if (p1.data.Check_Left_Side(block_x, block_y))p1.data.Change_Board(&block_x, &block_y, key); break;
-					case 77: if (p1.data.Check_Right_Side(block_x, block_y))p1.data.Change_Board(&block_x, &block_y, key); break;
+					case 72: while (p1.gm.Check_Next_Line(block_x, block_y)) p1.gm.Change_Board(&block_x, &block_y, 80); break;
+					case 80: if (p1.gm.Check_Next_Line(block_x, block_y))p1.gm.Change_Board(&block_x, &block_y, key); break;
+					case 75: if (p1.gm.Check_Left_Side(block_x, block_y))p1.gm.Change_Board(&block_x, &block_y, key); break;
+					case 77: if (p1.gm.Check_Right_Side(block_x, block_y))p1.gm.Change_Board(&block_x, &block_y, key); break;
 						//sapce
 					}
 				}
 			}
-			if (p1.data.Check_Next_Line(block_x, block_y))
+			if (p1.gm.Check_Next_Line(block_x, block_y))
 			{
-				p1.data.Change_Board(&block_x, &block_y, 80); // down
+				p1.gm.Change_Board(&block_x, &block_y, 80); // down
 				Sleep(speed);
 			}
 			else
 			{
-				p1.data.Updata_Top();
-				std::cout << p1.data.top << std::endl;
+				p1.gm.Updata_Top();
 				break;
 			}
 		}

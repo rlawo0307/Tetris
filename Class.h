@@ -43,21 +43,27 @@ public:
 	void Set_Cursor();
 };
 
-class Game
+class Game_manager
 {
+private:
+	double falling_speed;
+	int i_next_block; //index of next block
+	int board[BOARD_COL][BOARD_ROW];
+	int cur_block[BLOCK_COL][BLOCK_ROW];
+	int top = BOARD_COL - 1;
+
 public:
-	Game()
+	Game_manager()
 	{
 		falling_speed = 4.0;
 		i_next_block = 0;
 		memset(board, 0, sizeof(board));
 	}
 
-	double falling_speed;
-	int i_next_block; //index of next block
-	int board[BOARD_COL][BOARD_ROW];
-	int cur_block[BLOCK_COL][BLOCK_ROW];
-	int top = BOARD_COL-1;
+	double Cal_Speed()
+	{
+		return 1000 * (1 / falling_speed);
+	}
 
 	void Init_Board()
 	{
@@ -156,7 +162,6 @@ public:
 
 		switch (key)
 		{
-		case 72: 
 		case 80: next_block_y++; break; //DOWN
 		case 75: next_block_x--; break; // LEFT
 		case 77: next_block_x++; break; // RIGHT
@@ -197,21 +202,27 @@ public:
 					return;
 				}
 	}
+
+	bool Game_Over()
+	{
+		return top > 0 ? true : false;
+	}
 };
 
 class Player
 {
+private:
+	std::string ID;
+	int score;
+	Game_manager gm;
+
 public:
 	Player()
 	{
 		this->ID = Input_ID();
 		score = 0;
-		data = Game();
+		gm = Game_manager();
 	}
-
-	std::string ID;
-	int score;
-	Game data;
 
 	const std::string Input_ID()
 	{
