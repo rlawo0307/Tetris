@@ -59,7 +59,6 @@ void Play_Game_1P(Player& p1)
 	char key = ' ';
 
 	system("cls");
-	p1.gm.Init_Board();
 	//File_Open(GAMEBOX_1P_PATH);
 
 	while (p1.gm.Game_Over())
@@ -79,9 +78,9 @@ void Play_Game_1P(Player& p1)
 					switch (key)
 					{
 					case 72: while (p1.gm.Check_Next_Line(block_x, block_y)) p1.gm.Change_Board(&block_x, &block_y, 80); break;
-					case 80: if (p1.gm.Check_Next_Line(block_x, block_y))p1.gm.Change_Board(&block_x, &block_y, key); break;
-					case 75: if (p1.gm.Check_Left_Side(block_x, block_y))p1.gm.Change_Board(&block_x, &block_y, key); break;
-					case 77: if (p1.gm.Check_Right_Side(block_x, block_y))p1.gm.Change_Board(&block_x, &block_y, key); break;
+					case 80: if (p1.gm.Check_Next_Line(block_x, block_y)) p1.gm.Change_Board(&block_x, &block_y, key); break;
+					case 75: if (p1.gm.Check_Left_Side(block_x, block_y)) p1.gm.Change_Board(&block_x, &block_y, key); break;
+					case 77: if (p1.gm.Check_Right_Side(block_x, block_y)) p1.gm.Change_Board(&block_x, &block_y, key); break;
 						//sapce
 					}
 				}
@@ -94,6 +93,7 @@ void Play_Game_1P(Player& p1)
 			else
 			{
 				p1.gm.Updata_Top();
+				p1.gm.Score_Check(&block_x, &block_y);
 				break;
 			}
 		}

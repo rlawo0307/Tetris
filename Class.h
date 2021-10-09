@@ -20,7 +20,7 @@
 #define C_BLOCK4 4 //red
 #define C_BLOCK5 5 //magenta
 #define C_BLOCK6 6 //brown
-#define C_BLOCK7 7 // darkgray
+#define C_BLOCK7 14 // yellow
 
 #define BOARD_COL 20
 #define BOARD_ROW 10
@@ -46,39 +46,44 @@ public:
 class Game_manager
 {
 private:
+	int score;
 	double falling_speed;
 	int i_next_block; //index of next block
 	int board[BOARD_COL][BOARD_ROW];
 	int cur_block[BLOCK_COL][BLOCK_ROW];
 	int top = BOARD_COL - 1;
+	int color[8] = { C_EMPTY, C_BLOCK1, C_BLOCK2, C_BLOCK3, C_BLOCK4, C_BLOCK5,C_BLOCK6, C_BLOCK7 };
 
 public:
+	//int score;
+
 	Game_manager()
 	{
+		score = 0;
 		falling_speed = 4.0;
 		i_next_block = 0;
-		memset(board, 0, sizeof(board));
+		Init_Board();
 	}
 
 	double Cal_Speed()
 	{
 		return 1000 * (1 / falling_speed);
 	}
-
+	
 	void Init_Board()
 	{
 		for (int i = 0; i < BOARD_COL; i++)
 			for (int j = 0; j < BOARD_ROW; j++)
-				board[i][j] = C_EMPTY;
+				board[i][j] = 0;
 
-		Print_Board();
+		//Print_Board();
 	}
 
 	void Init_Cur_Block()
 	{
 		for (int i = 0; i < BLOCK_COL; i++)
 			for (int j = 0; j < BLOCK_ROW; j++)
-				cur_block[i][j] = C_EMPTY;
+				cur_block[i][j] = 0;
 	}
 
 	void Rand_Next_Block()
@@ -116,7 +121,7 @@ public:
 			return false;
 		//reach other block
 		for (int i = 0; i < BLOCK_ROW; i++)
-			if (cur_block[BLOCK_COL - 1][i] != C_EMPTY && board[block_y + BLOCK_COL][block_x + i] != C_EMPTY)
+			if (cur_block[BLOCK_COL - 1][i] != 0 && board[block_y + BLOCK_COL][block_x + i] != 0)
 				return false;
 		return true;
 	}
@@ -125,10 +130,10 @@ public:
 	{
 		for (int i = 0; i < BLOCK_COL; i++)
 			for (int j = 0; j < BLOCK_ROW; j++)
-				if (cur_block[i][j] != C_EMPTY)
+				if (cur_block[i][j] != 0)
 				{
 					if (block_x + j == 0 //reach end of board
-						|| board[block_y + i][block_x + j - 1] != C_EMPTY) // reach other block
+						|| board[block_y + i][block_x + j - 1] != 0) // reach other block
 						return false;
 					break;
 				}
@@ -139,10 +144,10 @@ public:
 	{
 		for (int i = 0; i<BLOCK_COL; i++)
 			for (int j = BLOCK_ROW - 1; j >= 0; j--)
-				if (cur_block[i][j] != C_EMPTY)
+				if (cur_block[i][j] != 0)
 				{
 					if (block_x + j ==  BOARD_ROW-1// reach end of board
-						|| board[block_y + i][block_x + j + 1] != C_EMPTY)
+						|| board[block_y + i][block_x + j + 1] != 0)
 						return false;
 					break;
 				}
@@ -157,8 +162,8 @@ public:
 		//clear prev block
 		for (int i = 0; i < BLOCK_COL; i++)
 			for (int j = 0; j < BLOCK_ROW; j++)
-				if (cur_block[i][j] != C_EMPTY)
-					board[prev_block_y + i][prev_block_x + j] = C_EMPTY;
+				if (cur_block[i][j] != 0)
+					board[prev_block_y + i][prev_block_x + j] = 0;
 
 		switch (key)
 		{
@@ -171,7 +176,7 @@ public:
 		//change next block
 		for (int i = 0; i < BLOCK_COL; i++)
 			for (int j = 0; j < BLOCK_ROW; j++)
-				if (cur_block[i][j] != C_EMPTY)
+				if (cur_block[i][j] != 0)
 					board[next_block_y + i][next_block_x + j] = cur_block[i][j];
 
 		*cur_block_x = next_block_x;
@@ -186,7 +191,7 @@ public:
 			Cursor_Move(BOARD_POS_X, BOARD_POS_Y+i);
 			for (int j = 0; j < BOARD_ROW; j++)
 			{
-				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), board[i][j]);
+				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color[board[i][j]]);
 				std::cout << "бс";
 			}
 		}
@@ -196,11 +201,32 @@ public:
 	{
 		for (int i = 0; i < BOARD_COL; i++)
 			for (int j = 0; j < BOARD_ROW; j++)
-				if (board[i][j] != C_EMPTY && top > i)
+				if (board[i][j] != 0 && top > i)
 				{
 					top = i;
 					return;
 				}
+	}
+
+	void Score_Check(int* block_x, int* block_y)
+	{
+		int board_x = *block_x, board_y = *block_y;
+		bool check = true;
+
+		for (int i = 0; i < BLOCK_COL; i++)
+		{
+			for (int j = 0; j < BLOCK_ROW; j++)
+				if (board[board_y+i][board_x+j] == 0)
+				{
+					check = false;
+					break;
+				}
+			if (check)
+			{
+				score += BOARD_ROW;
+			}
+		}
+		std::cout << "\nscore : " << score << std::endl;
 	}
 
 	bool Game_Over()
@@ -213,10 +239,11 @@ class Player
 {
 private:
 	std::string ID;
+
+public:
 	int score;
 	Game_manager gm;
 
-public:
 	Player()
 	{
 		this->ID = Input_ID();

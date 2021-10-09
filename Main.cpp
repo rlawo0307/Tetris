@@ -7,7 +7,6 @@
 
 int main()
 {
-
 	Player player1 = Player();
 	Play_Game_1P(player1);
 
