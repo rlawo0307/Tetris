@@ -7,10 +7,6 @@
 
 int main()
 {
-	Player player1 = Player(1);
-	Play_1P(player1);
-
-	/*
 	char key = ' ';
 	do
 	{
@@ -30,7 +26,6 @@ int main()
 		case 'e': break;
 		}
 	} while (!(key == 'n' || key == 'l'));
-	*/
 	return 0;
 }
 
