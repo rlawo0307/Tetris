@@ -34,14 +34,14 @@ void New_Game()
 	std::cout << str[0] << std::endl;
 	if (str == "1P")
 	{
-		Player player1 = Player();
-		Play_Game_1P(player1);
+		Player player1 = Player(1);
+		Play_1P(player1);
 	}
 	else
 	{
-		Player player1 = Player();
-		Player player2 = Player();
-		Play_Game_2P(player1, player2);
+		Player player1 = Player(1);
+		Player player2 = Player(2);
+		Play_2P(player1, player2);
 	}
 }
 
@@ -53,20 +53,35 @@ void Load_Game()
 	//Play_Game_1P() or Play_Game_2P()
 }
 
-void Play_Game_1P(Player& p1)
+void Play_1P(Player& p1)
 {
-	double speed = p1.gm.Cal_Speed();
+	int box_x, box_y;
+	system("cls");
+	//File_Open(GAMEBOX_1P_PATH);
+
+	Play_Game(p1);
+}
+
+void Play_2P(Player& p1, Player& p2)
+{
+	system("cls");
+	//File_Open(GAMEBOX_2P_PATH);
+}
+
+void Play_Game(Player& player)
+{
+	double speed = player.gm.Cal_Speed();
 	char key = ' ';
 
 	system("cls");
 	//File_Open(GAMEBOX_1P_PATH);
 
-	while (p1.gm.Game_Over())
+	while (player.gm.Game_Over())
 	{
 		int block_x = BLOCK_X, block_y = BLOCK_Y;
-		p1.gm.Rand_Next_Block();
+		player.gm.Rand_Next_Block();
 
-		while(1)
+		while (1)
 		{
 			int j = 0;
 			while (j++ < 10)
@@ -77,33 +92,26 @@ void Play_Game_1P(Player& p1)
 					key = _getch();
 					switch (key)
 					{
-					case 72: while (p1.gm.Check_Next_Line(block_x, block_y)) p1.gm.Change_Board(&block_x, &block_y, 80); break;
-					case 80: if (p1.gm.Check_Next_Line(block_x, block_y)) p1.gm.Change_Board(&block_x, &block_y, key); break;
-					case 75: if (p1.gm.Check_Left_Side(block_x, block_y)) p1.gm.Change_Board(&block_x, &block_y, key); break;
-					case 77: if (p1.gm.Check_Right_Side(block_x, block_y)) p1.gm.Change_Board(&block_x, &block_y, key); break;
+					case 72: while (player.gm.Check_Next_Line(block_x, block_y)) player.gm.Change_Board(&block_x, &block_y, 80); break;
+					case 80: if (player.gm.Check_Next_Line(block_x, block_y)) player.gm.Change_Board(&block_x, &block_y, key); break;
+					case 75: if (player.gm.Check_Left_Side(block_x, block_y)) player.gm.Change_Board(&block_x, &block_y, key); break;
+					case 77: if (player.gm.Check_Right_Side(block_x, block_y)) player.gm.Change_Board(&block_x, &block_y, key); break;
 						//sapce
 					}
 				}
 			}
-			if (p1.gm.Check_Next_Line(block_x, block_y))
+			if (player.gm.Check_Next_Line(block_x, block_y))
 			{
-				p1.gm.Change_Board(&block_x, &block_y, 80); // down
+				player.gm.Change_Board(&block_x, &block_y, 80); // down
 				Sleep(speed);
 			}
 			else
 			{
-				p1.gm.Updata_Top();
-				p1.gm.Score_Check(&block_x, &block_y);
+				player.gm.Updata_Top();
+				player.gm.Score_Check(&block_x, &block_y);
 				break;
 			}
 		}
 	}
 	std::cout << "Game Over\n";
-}
-
-void Play_Game_2P(Player& p1, Player& p2)
-{
-	system("cls");
-	std::cout << "2P Start\n";
-	File_Open(GAMEBOX_2P_PATH);
 }

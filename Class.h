@@ -24,28 +24,18 @@
 
 #define BOARD_COL 20
 #define BOARD_ROW 10
-#define BOARD_POS_X 5
-#define BOARD_POS_Y 5
+//#define BOARD_X 5
+//#define BOARD_Y 5
 
 #define BLOCK_COL 4
 #define BLOCK_ROW 4
 #define BLOCK_X 2
 #define BLOCK_Y -3
 
-//Func.cpp
-class Cursor
-{
-public:
-	int x;
-	int y;
-	
-	void Get_Cursor();
-	void Set_Cursor();
-};
-
-class Game_manager
+class Game_Manager
 {
 private:
+	int board_x, board_y;
 	int score;
 	double falling_speed;
 	int i_next_block; //index of next block
@@ -57,14 +47,35 @@ private:
 public:
 	//int score;
 
-	Game_manager()
+	Game_Manager()
 	{
+		;
+	}
+	
+	Game_Manager(int num)
+	{
+		if (num == 1)
+		{
+			board_x = 5;
+			board_y = 5;
+		}
+		else
+		{
+			board_x = 5 + BOARD_ROW + 2;
+			board_y = 5;
+		}
 		score = 0;
 		falling_speed = 4.0;
 		i_next_block = 0;
 		Init_Board();
 	}
-
+	/*
+	void Get_Board_Pos(int* board_x, int* board_y)
+	{
+		*board_x = this->board_x;
+		*board_y = this->board_y;
+	}
+	*/
 	double Cal_Speed()
 	{
 		return 1000 * (1 / falling_speed);
@@ -188,7 +199,7 @@ public:
 	{
 		for (int i = 0; i < BOARD_COL; i++)
 		{
-			Cursor_Move(BOARD_POS_X, BOARD_POS_Y+i);
+			Cursor_Move(board_x, board_y+i);
 			for (int j = 0; j < BOARD_ROW; j++)
 			{
 				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color[board[i][j]]);
@@ -226,12 +237,21 @@ public:
 				score += BOARD_ROW;
 			}
 		}
+		Cursor_Move(board_x, board_y + 20);
 		std::cout << "\nscore : " << score << std::endl;
 	}
 
 	bool Game_Over()
 	{
 		return top > 0 ? true : false;
+	}
+
+	void Cursor_Move(int x, int y)
+	{
+		COORD Cur;
+		Cur.X = x;
+		Cur.Y = y;
+		SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), Cur);
 	}
 };
 
@@ -242,13 +262,13 @@ private:
 
 public:
 	int score;
-	Game_manager gm;
+	Game_Manager gm;
 
-	Player()
+	Player(int num)
 	{
 		this->ID = Input_ID();
 		score = 0;
-		gm = Game_manager();
+		gm = Game_Manager(num);
 	}
 
 	const std::string Input_ID()

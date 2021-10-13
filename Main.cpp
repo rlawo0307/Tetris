@@ -7,8 +7,8 @@
 
 int main()
 {
-	Player player1 = Player();
-	Play_Game_1P(player1);
+	Player player1 = Player(1);
+	Play_1P(player1);
 
 	/*
 	char key = ' ';
@@ -31,7 +31,6 @@ int main()
 		}
 	} while (!(key == 'n' || key == 'l'));
 	*/
-
 	return 0;
 }
 
