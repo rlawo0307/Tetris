@@ -4,22 +4,27 @@
 #include "File.h"
 #include "Player.h"
 #include "Game_Manager.h"
+#include "Cursor.h"
 
 #define MAIN_SCREEN_PATH "./res/main_menu.txt"
 #define RANKING_SCREEN_PATH "./res/rank.txt"
 #define HELP_SCREEN_PATH "./res/help.txt"
 #define OPTION_SCREEN_PATH "./res/option.txt"
-#define GAMEBOX_1P_PATH "./res/gamebox_1P.txt"
-#define GAMEBOX_2P_PATH "./res/gamebox_2P.txt"
+#define GAMEBOX_1P_PATH "./res/gamebox.txt"
+#define NEW_GAME_PATH "./res/new_game.txt"
+#define GAME_MENU "./res/game_menu.txt"
 
 class MENU
 {
 private:
 	File file;
+	Cursor cs;
+
 public:
 	MENU()
 	{
 		file = File();
+		cs = Cursor();
 	}
 
 	void Show_Main()
@@ -61,6 +66,7 @@ public:
 	void New_Game()
 	{
 		system("cls");
+		file.File_Open(NEW_GAME_PATH);
 
 		Player player1 = Player(1);
 		Game_Manager gm = Game_Manager();
@@ -75,13 +81,23 @@ public:
 		//Play_Game_1P() or Play_Game_2P()
 	}
 
+	void Show_Game_Menu()
+	{
+		char key = ' ';
+
+		cs.Cursor_Move(10, 0);
+		file.File_Open(GAME_MENU);
+		while (key != 'e' && key != 27)
+			key = _getch();
+	}
+
 	void Play_Game(Player& player, Game_Manager& gm)
 	{
 		double speed = gm.Cal_Speed();
 		char key = ' ';
 
 		system("cls");
-		//File_Open(GAMEBOX_1P_PATH);
+		file.File_Open(GAMEBOX_1P_PATH);
 
 		while (gm.Game_Over())
 		{
@@ -104,6 +120,8 @@ public:
 						case 75: if (gm.Check_Left_Side(block_x, block_y)) gm.Change_Board(&block_x, &block_y, key); break;
 						case 77: if (gm.Check_Right_Side(block_x, block_y)) gm.Change_Board(&block_x, &block_y, key); break;
 						case 32: gm.Change_Board(&block_x, &block_y, 32);
+						case 27: Show_Game_Menu(); break; //esc
+						default: std::cout << (int)key << std::endl;
 						}
 					}
 				}

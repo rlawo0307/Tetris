@@ -22,9 +22,8 @@ int main()
 		case 'h': menu.Show_Help(); break;
 		case 'n': menu.New_Game(); break;
 		case 'l': menu.Load_Game(); break;
-		case 'e': break;
+		case 'e': return 0;
 		}
 	} while (!(key == 'n' || key == 'l'));
-	return 0;
 }
 
