@@ -251,23 +251,28 @@ public:
 
 	void Score_Check(int* block_x, int* block_y)
 	{
-		bool check = true;
+		bool check;
 
 		for (int i = 0; i < BLOCK_COL; i++)
 		{
-			for (int j = 0; j < BLOCK_ROW; j++)
-				if (board[*block_y +i][*block_y +j] == 0)
+			check = true;
+			for (int j = 0; j < BOARD_ROW; j++)
+				if (board[*block_y +i][j] == 0)
 				{
 					check = false;
 					break;
 				}
 			if (check)
 			{
-				std::cout << "scroe+";
 				score += BOARD_ROW;
+				for (int k = i - 1; k >= 0; k--)
+					for (int j = 0; j < BOARD_ROW; j++)
+						board[*block_y + k + 1][j] = board[k][j];
+				Sleep(2000);
 			}
 		}
 		Cursor_Move(BOARD_X, BOARD_Y + 20);
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color[0]);
 		std::cout << "\nscore : " << score << std::endl;
 	}
 
@@ -292,13 +297,11 @@ private:
 
 public:
 	int score;
-	//Game_Manager gm;
 
 	Player(int num)
 	{
 		this->ID = Input_ID();
 		score = 0;
-		//gm = Game_Manager(num);
 	}
 
 	const std::string Input_ID()
