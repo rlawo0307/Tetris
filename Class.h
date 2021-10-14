@@ -264,11 +264,11 @@ public:
 				}
 			if (check)
 			{
+				std::cout << i << ","<<*block_y+i<<std::endl;
 				score += BOARD_ROW;
-				for (int k = i - 1; k >= 0; k--)
+				for (int k = *block_y+i; k >= 0; k--)
 					for (int j = 0; j < BOARD_ROW; j++)
-						board[*block_y + k + 1][j] = board[k][j];
-				Sleep(2000);
+						board[k][j] = board[k-1][j];
 			}
 		}
 		Cursor_Move(BOARD_X, BOARD_Y + 20);
