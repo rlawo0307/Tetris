@@ -1,17 +1,8 @@
 #pragma once
+
 #include <iostream>
 #include <random>
-#include <string>
-#include "Windows.h"
-#include "Func.h"
-#include <conio.h> // _kbhit(),_getch(0
-
-#define MAIN_SCREEN_PATH "./res/main_menu.txt"
-#define RANKING_SCREEN_PATH "./res/rank.txt"
-#define HELP_SCREEN_PATH "./res/help.txt"
-#define OPTION_SCREEN_PATH "./res/option.txt"
-#define GAMEBOX_1P_PATH "./res/gamebox_1P.txt"
-#define GAMEBOX_2P_PATH "./res/gamebox_2P.txt"
+#include "Cursor.h"
 
 #define C_EMPTY 15 //white
 #define C_BLOCK1 1 //blue
@@ -35,19 +26,20 @@
 class Game_Manager
 {
 private:
-	//int score;
 	double falling_speed;
 	int i_next_block; //index of next block
 	int board[BOARD_COL][BOARD_ROW];
 	int cur_block[BLOCK_COL][BLOCK_ROW];
 	int top = BOARD_COL - 1;
 	int color[8] = { C_EMPTY, C_BLOCK1, C_BLOCK2, C_BLOCK3, C_BLOCK4, C_BLOCK5,C_BLOCK6, C_BLOCK7 };
+	Cursor cs;
 
 public:
 	int score;
 
 	Game_Manager()
 	{
+		cs = Cursor();
 		score = 0;
 		falling_speed = 4.0;
 		i_next_block = 0;
@@ -58,7 +50,7 @@ public:
 	{
 		return 1000 * (1 / falling_speed);
 	}
-	
+
 	void Init_Board()
 	{
 		for (int i = 0; i < BOARD_COL; i++)
@@ -98,8 +90,8 @@ public:
 		for (int i = 0; i < BLOCK_COL; i++)
 			for (int j = 0; j < BLOCK_ROW; j++)
 				if (BLOCK_Y + i >= 0)
-						board[BLOCK_Y + i][BLOCK_X + j] = cur_block[i][j];
-		
+					board[BLOCK_Y + i][BLOCK_X + j] = cur_block[i][j];
+
 		Print_Board();
 	}
 
@@ -128,14 +120,14 @@ public:
 				}
 		return true;
 	}
-	
+
 	bool Check_Right_Side(int block_x, int block_y)
 	{
-		for (int i = 0; i<BLOCK_COL; i++)
+		for (int i = 0; i < BLOCK_COL; i++)
 			for (int j = BLOCK_ROW - 1; j >= 0; j--)
 				if (cur_block[i][j] != 0)
 				{
-					if (block_x + j ==  BOARD_ROW-1// reach end of board
+					if (block_x + j == BOARD_ROW - 1// reach end of board
 						|| board[block_y + i][block_x + j + 1] != 0)
 						return false;
 					break;
@@ -177,7 +169,6 @@ public:
 	{
 		bool check = true;
 		int c_cnt = 0, r_cnt = 0;
-
 		int tmp[BLOCK_COL][BLOCK_ROW] = { 0, };
 
 		for (int i = 0; i < BLOCK_COL; i++)
@@ -218,18 +209,31 @@ public:
 						tmp[i][j] = 0;
 				}
 
-		Init_Cur_Block();
-
+		check = true;
 		for (int i = 0; i < BLOCK_COL; i++)
 			for (int j = 0; j < BLOCK_ROW; j++)
-				cur_block[i][j] = tmp[i][j];
+				if (tmp[i][j] != 0 && board[block_y + i][block_x + j] != 0)
+				{
+					check = false;
+					break;
+				}
+		if (check)
+		{
+			Init_Cur_Block();
+
+			for (int i = 0; i < BLOCK_COL; i++)
+				for (int j = 0; j < BLOCK_ROW; j++)
+					cur_block[i][j] = tmp[i][j];
+		}
+		else
+			return;
 	}
 
 	void Print_Board()
 	{
 		for (int i = 0; i < BOARD_COL; i++)
 		{
-			Cursor_Move(BOARD_X, BOARD_Y +i);
+			cs.Cursor_Move(BOARD_X, BOARD_Y + i);
 			for (int j = 0; j < BOARD_ROW; j++)
 			{
 				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color[board[i][j]]);
@@ -257,7 +261,7 @@ public:
 		{
 			check = true;
 			for (int j = 0; j < BOARD_ROW; j++)
-				if (board[*block_y +i][j] == 0)
+				if (board[*block_y + i][j] == 0)
 				{
 					check = false;
 					break;
@@ -273,7 +277,7 @@ public:
 							board[k][j] = board[k - 1][j];
 			}
 		}
-		Cursor_Move(BOARD_X, BOARD_Y + 20);
+		cs.Cursor_Move(BOARD_X, BOARD_Y + 20);
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color[0]);
 		std::cout << "\nscore : " << score << std::endl;
 	}
@@ -282,37 +286,5 @@ public:
 	{
 		return top > 0 ? true : false;
 	}
-
-	void Cursor_Move(int x, int y)
-	{
-		COORD Cur;
-		Cur.X = x;
-		Cur.Y = y;
-		SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), Cur);
-	}
 };
-
-class Player
-{
-private:
-	std::string ID;
-
-public:
-	int score;
-
-	Player(int num)
-	{
-		this->ID = Input_ID();
-		score = 0;
-	}
-
-	const std::string Input_ID()
-	{
-		std::string str;
-		std::cout << "Player ID : ";
-		std::cin >> str;
-		return str;
-	}
-};
-
 
