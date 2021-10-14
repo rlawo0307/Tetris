@@ -35,7 +35,7 @@
 class Game_Manager
 {
 private:
-	int score;
+	//int score;
 	double falling_speed;
 	int i_next_block; //index of next block
 	int board[BOARD_COL][BOARD_ROW];
@@ -44,7 +44,7 @@ private:
 	int color[8] = { C_EMPTY, C_BLOCK1, C_BLOCK2, C_BLOCK3, C_BLOCK4, C_BLOCK5,C_BLOCK6, C_BLOCK7 };
 
 public:
-	//int score;
+	int score;
 
 	Game_Manager()
 	{
@@ -264,11 +264,13 @@ public:
 				}
 			if (check)
 			{
-				std::cout << i << ","<<*block_y+i<<std::endl;
 				score += BOARD_ROW;
-				for (int k = *block_y+i; k >= 0; k--)
+				for (int k = *block_y + i; k >= 0; k--)
 					for (int j = 0; j < BOARD_ROW; j++)
-						board[k][j] = board[k-1][j];
+						if (k == 0)
+							board[k][j] = 0;
+						else
+							board[k][j] = board[k - 1][j];
 			}
 		}
 		Cursor_Move(BOARD_X, BOARD_Y + 20);
