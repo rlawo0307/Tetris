@@ -14,6 +14,9 @@
 #define NEW_GAME_PATH "./res/new_game.txt"
 #define GAME_MENU "./res/game_menu.txt"
 
+#define GAME_MENU_X 30
+#define GAME_MENU_Y 10
+
 class MENU
 {
 private:
@@ -30,7 +33,7 @@ public:
 	void Show_Main()
 	{
 		system("cls");
-		file.File_Open(MAIN_SCREEN_PATH);
+		file.File_Open(MAIN_SCREEN_PATH, 0, 0);
 	}
 
 	void Show_Option()
@@ -38,7 +41,7 @@ public:
 		char key = ' ';
 
 		system("cls");
-		file.File_Open(OPTION_SCREEN_PATH);
+		//file.File_Open(OPTION_SCREEN_PATH);
 		while (key != 'e')
 			key = _getch();
 	}
@@ -48,7 +51,7 @@ public:
 		char key = ' ';
 
 		system("cls");
-		file.File_Open(RANKING_SCREEN_PATH);
+		//file.File_Open(RANKING_SCREEN_PATH);
 		while (key != 'e')
 			key = _getch();
 	}
@@ -58,7 +61,7 @@ public:
 		char key = ' ';
 
 		system("cls");
-		file.File_Open(HELP_SCREEN_PATH);
+		//file.File_Open(HELP_SCREEN_PATH);
 		while (key != 'e')
 			key = _getch();
 	}
@@ -66,7 +69,7 @@ public:
 	void New_Game()
 	{
 		system("cls");
-		file.File_Open(NEW_GAME_PATH);
+		//file.File_Open(NEW_GAME_PATH);
 
 		Player player1 = Player(1);
 		Game_Manager gm = Game_Manager();
@@ -81,14 +84,19 @@ public:
 		//Play_Game_1P() or Play_Game_2P()
 	}
 
-	void Show_Game_Menu()
+	void Show_Game_Menu(Game_Manager& gm, double* speed)
 	{
 		char key = ' ';
 
-		cs.Cursor_Move(10, 0);
-		file.File_Open(GAME_MENU);
-		while (key != 'e' && key != 27)
+		file.File_Open(GAME_MENU, GAME_MENU_X, GAME_MENU_Y);
+		while (key != 27 && key != 'f')
 			key = _getch();
+		switch (key)
+		{
+		case 27: system("cls"); break; //esc
+		case 'f': gm.Change_Speed(speed); break;
+		default: std::cout << (int)key;
+		}
 	}
 
 	void Play_Game(Player& player, Game_Manager& gm)
@@ -97,7 +105,7 @@ public:
 		char key = ' ';
 
 		system("cls");
-		file.File_Open(GAMEBOX_1P_PATH);
+		file.File_Open(GAMEBOX_1P_PATH, 0, 0);
 
 		while (gm.Game_Over())
 		{
@@ -120,7 +128,7 @@ public:
 						case 75: if (gm.Check_Left_Side(block_x, block_y)) gm.Change_Board(&block_x, &block_y, key); break;
 						case 77: if (gm.Check_Right_Side(block_x, block_y)) gm.Change_Board(&block_x, &block_y, key); break;
 						case 32: gm.Change_Board(&block_x, &block_y, 32);
-						case 27: Show_Game_Menu(); break; //esc
+						case 27: Show_Game_Menu(gm, &speed); gm.Print_Board(); break; //esc
 						default: std::cout << (int)key << std::endl;
 						}
 					}

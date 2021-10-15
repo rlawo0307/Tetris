@@ -23,6 +23,12 @@
 #define BLOCK_X 2
 #define BLOCK_Y -3
 
+#define SCORE_X BOARD_X+BOARD_ROW+2
+#define SCORE_Y BOARD_Y+BOARD_COL+2
+
+#define SPEED_X SCORE_X
+#define SPEED_Y SCORE_Y+1
+
 class Game_Manager
 {
 private:
@@ -240,6 +246,8 @@ public:
 				std::cout << "กแ";
 			}
 		}
+		Print_Score();
+		Print_Speed();
 	}
 
 	void Updata_Top()
@@ -277,14 +285,47 @@ public:
 							board[k][j] = board[k - 1][j];
 			}
 		}
-		cs.Cursor_Move(BOARD_X, BOARD_Y + 20);
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color[0]);
-		std::cout << "\nscore : " << score << std::endl;
 	}
 
 	bool Game_Over()
 	{
 		return top > 0 ? true : false;
+	}
+
+	void Print_Score()
+	{
+		cs.Cursor_Move(SCORE_X, SCORE_Y);
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color[0]);
+		std::cout << "\n* Score : " << score << std::endl;
+	}
+
+	void Print_Speed()
+	{
+		cs.Cursor_Move(SPEED_X, SPEED_Y);
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color[0]);
+		std::cout << "\n* Speed : " << falling_speed << std::endl;
+	}
+
+	void Change_Speed(double* speed)
+	{
+		char key = ' ';
+		int tmp = falling_speed;
+
+		do
+		{
+			key = _getch();
+			cs.Cursor_Move(50, 10);
+			std::cout << "Speed Up(ก่), Speed Down(ก้)\n";
+			switch (key)
+			{
+			case 72: tmp++; break; //UP
+			case 80: tmp--; break; //DOWN
+			case 27: break;//esc
+			case 13: falling_speed = tmp; *speed = Cal_Speed(); break; //enter
+			}
+			cs.Cursor_Move(SPEED_X, SPEED_Y);
+			std::cout << "\n* Speed : " << tmp << std::endl;
+		} while (key != 27 && key != 13);
 	}
 };
 
