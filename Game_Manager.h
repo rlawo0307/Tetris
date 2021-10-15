@@ -19,12 +19,12 @@
 #define BOARD_Y GAMEBOX_Y+2
 #define BLOCK_X 2
 #define BLOCK_Y -3
-#define SCORE_X BOARD_X+BOARD_ROW+2
-#define SCORE_Y BOARD_Y+BOARD_COL+2
+#define SCORE_X GAMEBOX_X+BOARD_ROW+25
+#define SCORE_Y GAMEBOX_Y+BOARD_COL-2
 #define SPEED_X SCORE_X
-#define SPEED_Y SCORE_Y+1
-#define SPEED_CHANGE_X 60
-#define SPEED_CHANGE_Y 10
+#define SPEED_Y SCORE_Y+2
+#define SPEED_CHANGE_X 35
+#define SPEED_CHANGE_Y 5
 
 #define C_EMPTY 15 //white
 #define C_BLOCK1 1 //blue
@@ -92,7 +92,7 @@ public:
 
 		switch (i_next_block)
 		{
-		case 1: cur_block[0][0] = cur_block[1][0] = cur_block[2][0] = cur_block[3][0] = i_next_block; break;
+		case 1: cur_block[0][3] = cur_block[1][3] = cur_block[2][3] = cur_block[3][3] = i_next_block; break;
 		case 2: cur_block[2][3] = cur_block[3][1] = cur_block[3][2] = cur_block[3][3] = i_next_block; break;
 		case 3: cur_block[2][1] = cur_block[3][1] = cur_block[3][2] = cur_block[3][3] = i_next_block; break;
 		case 4: cur_block[2][2] = cur_block[3][1] = cur_block[3][2] = cur_block[3][3] = i_next_block; break;
@@ -151,35 +151,33 @@ public:
 
 	void Change_Board(int* cur_block_x, int* cur_block_y, char key)
 	{
-		int prev_block_x = *cur_block_x, prev_block_y = *cur_block_y;
-		int next_block_x = *cur_block_x, next_block_y = *cur_block_y;
+		//int prev_block_x = *cur_block_x, prev_block_y = *cur_block_y;
+		//int next_block_x = *cur_block_x, next_block_y = *cur_block_y;
 
 		//clear prev block
 		for (int i = 0; i < BLOCK_COL; i++)
 			for (int j = 0; j < BLOCK_ROW; j++)
 				if (cur_block[i][j] != 0)
-					board[prev_block_y + i][prev_block_x + j] = 0;
+					board[*cur_block_y + i][*cur_block_x + j] = 0;
 
 		switch (key)
 		{
-		case 80: next_block_y++; break; //DOWN
-		case 75: next_block_x--; break; // LEFT
-		case 77: next_block_x++; break; // RIGHT
-		case 32: Rotate_Block(*cur_block_x, *cur_block_y); break; //SPACE 
+		case 80: (*cur_block_y)++; break; //DOWN
+		case 75: (*cur_block_x)--; break; // LEFT
+		case 77: (*cur_block_x)++; break; // RIGHT
+		case 32: Rotate_Block(cur_block_x, cur_block_y); break; //SPACE 
 		}
 
 		//change next block
 		for (int i = 0; i < BLOCK_COL; i++)
 			for (int j = 0; j < BLOCK_ROW; j++)
 				if (cur_block[i][j] != 0)
-					board[next_block_y + i][next_block_x + j] = cur_block[i][j];
+					board[*cur_block_y + i][*cur_block_x + j] = cur_block[i][j];
 
-		*cur_block_x = next_block_x;
-		*cur_block_y = next_block_y;
 		Print_Board();
 	}
 
-	void Rotate_Block(int block_x, int block_y)
+	void Rotate_Block(int* block_x, int* block_y)
 	{
 		bool check = true;
 		int c_cnt = 0, r_cnt = 0;
@@ -223,10 +221,20 @@ public:
 						tmp[i][j] = 0;
 				}
 
+		/*
+		for (int i = 0; i < BLOCK_ROW; i++)
+			for (int j = 0; j < BLOCK_COL; j++)
+				if (tmp[j][i] != 0 && *block_x < 0)
+				{
+					(*block_x) += i;
+					break;
+				}
+		*/
+
 		check = true;
 		for (int i = 0; i < BLOCK_COL; i++)
 			for (int j = 0; j < BLOCK_ROW; j++)
-				if (tmp[i][j] != 0 && board[block_y + i][block_x + j] != 0)
+				if (tmp[i][j] != 0 && board[*block_y + i][*block_x + j] != 0)
 				{
 					check = false;
 					break;
@@ -305,14 +313,14 @@ public:
 	{
 		cs.Cursor_Move(SCORE_X, SCORE_Y);
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color[0]);
-		std::cout << "\n* Score : " << score << std::endl;
+		std::cout << score << std::endl;
 	}
 
 	void Print_Speed(int speed)
 	{
 		cs.Cursor_Move(SPEED_X, SPEED_Y);
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color[0]);
-		std::cout << "\n* Speed : " << speed << std::endl;
+		std::cout << speed << " " << std::endl;
 	}
 
 	void Change_Speed(double* speed)

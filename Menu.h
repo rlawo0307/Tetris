@@ -14,8 +14,8 @@
 #define NEW_GAME_PATH "./res/new_game.txt"
 #define GAME_MENU "./res/game_menu.txt"
 
-#define GAME_MENU_X 30
-#define GAME_MENU_Y 10
+#define GAME_MENU_X 8
+#define GAME_MENU_Y 5
 
 class MENU
 {
@@ -119,14 +119,13 @@ public:
 					if (_kbhit()) //while user not input key, game continue
 					{
 						key = _getch();
-						std::cout << (int)key << std::endl;
 						switch (key)
 						{
 						case 72: while (gm.Check_Next_Line(block_x, block_y)) gm.Change_Board(&block_x, &block_y, 80); break;
 						case 80: if (gm.Check_Next_Line(block_x, block_y)) gm.Change_Board(&block_x, &block_y, key); break;
 						case 75: if (gm.Check_Left_Side(block_x, block_y)) gm.Change_Board(&block_x, &block_y, key); break;
 						case 77: if (gm.Check_Right_Side(block_x, block_y)) gm.Change_Board(&block_x, &block_y, key); break;
-						case 32: gm.Change_Board(&block_x, &block_y, 32);
+						case 32: gm.Change_Board(&block_x, &block_y, 32); break;
 						case 27: Show_Game_Menu(gm, &speed); gm.Print_Board(); break; //esc
 						}
 					}
