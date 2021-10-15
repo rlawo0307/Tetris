@@ -1,1 +1,15 @@
-help
++-----------------------+
+l                       l
+l    < HOW TO PLAY >    l
+l                       l
+l    ก่ : drop          l
+l                       l
+l    ก้ : down          l
+l                       l
+l    ก็ : left          l
+l                       l
+l    กๆ : right         l
+l                       l
+l    sapce : rotate     l
+l                       l
++-----------------------+

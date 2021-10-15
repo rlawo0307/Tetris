@@ -5,7 +5,7 @@
 #include "Cursor.h"
 #include "File.h"
 
-#define SPEED_CHAGNE "./res/speed_change.txt"
+#define SPEED_CHAGNE_PATH "./res/speed_change.txt"
 #define GAMEBOX_PATH "./res/gamebox.txt"
 
 #define BOARD_COL 20
@@ -13,18 +13,18 @@
 #define BLOCK_COL 4
 #define BLOCK_ROW 4
 
-#define GAMEBOX_X 0
-#define GAMEBOX_Y 0
+#define GAMEBOX_X 10
+#define GAMEBOX_Y 10
 #define BOARD_X GAMEBOX_X+2
 #define BOARD_Y GAMEBOX_Y+2
 #define BLOCK_X 2
 #define BLOCK_Y -3
-#define SCORE_X GAMEBOX_X+BOARD_ROW+25
+#define SCORE_X GAMEBOX_X+BOARD_ROW+15
 #define SCORE_Y GAMEBOX_Y+BOARD_COL-2
 #define SPEED_X SCORE_X
 #define SPEED_Y SCORE_Y+2
-#define SPEED_CHANGE_X 35
-#define SPEED_CHANGE_Y 5
+#define SPEED_CHANGE_X GAMEBOX_X+35
+#define SPEED_CHANGE_Y GAMEBOX_Y+5
 
 #define C_EMPTY 15 //white
 #define C_BLOCK1 1 //blue
@@ -38,14 +38,14 @@
 class Game_Manager
 {
 private:
+	Cursor cs;
+	File file;
 	double falling_speed;
 	int i_next_block; //index of next block
 	int board[BOARD_COL][BOARD_ROW];
 	int cur_block[BLOCK_COL][BLOCK_ROW];
 	int top = BOARD_COL - 1;
 	int color[8] = { C_EMPTY, C_BLOCK1, C_BLOCK2, C_BLOCK3, C_BLOCK4, C_BLOCK5,C_BLOCK6, C_BLOCK7 };
-	Cursor cs;
-	File file;
 
 public:
 	int score;
@@ -58,11 +58,6 @@ public:
 		falling_speed = 4.0;
 		i_next_block = 0;
 		Init_Board();
-	}
-
-	double Cal_Speed()
-	{
-		return 1000 * (1 / falling_speed);
 	}
 
 	void Init_Board()
@@ -151,9 +146,6 @@ public:
 
 	void Change_Board(int* cur_block_x, int* cur_block_y, char key)
 	{
-		//int prev_block_x = *cur_block_x, prev_block_y = *cur_block_y;
-		//int next_block_x = *cur_block_x, next_block_y = *cur_block_y;
-
 		//clear prev block
 		for (int i = 0; i < BLOCK_COL; i++)
 			for (int j = 0; j < BLOCK_ROW; j++)
@@ -251,22 +243,6 @@ public:
 			return;
 	}
 
-	void Print_Board()
-	{
-		file.Print_File(GAMEBOX_PATH, 0, 0);
-		for (int i = 0; i < BOARD_COL; i++)
-		{
-			cs.Cursor_Move(BOARD_X, BOARD_Y + i);
-			for (int j = 0; j < BOARD_ROW; j++)
-			{
-				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color[board[i][j]]);
-				std::cout << "бс";
-			}
-		}
-		Print_Score();
-		Print_Speed(falling_speed);
-	}
-
 	void Updata_Top()
 	{
 		for (int i = 0; i < BOARD_COL; i++)
@@ -304,9 +280,20 @@ public:
 		}
 	}
 
-	bool Game_Over()
+	void Print_Board()
 	{
-		return top > 0 ? true : false;
+		file.Print_File(GAMEBOX_PATH, GAMEBOX_X, GAMEBOX_Y);
+		for (int i = 0; i < BOARD_COL; i++)
+		{
+			cs.Cursor_Move(BOARD_X, BOARD_Y + i);
+			for (int j = 0; j < BOARD_ROW; j++)
+			{
+				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color[board[i][j]]);
+				std::cout << "бс";
+			}
+		}
+		Print_Score();
+		Print_Speed(falling_speed);
 	}
 
 	void Print_Score()
@@ -331,7 +318,7 @@ public:
 		do
 		{
 			key = _getch();
-			file.Print_File(SPEED_CHAGNE, SPEED_CHANGE_X, SPEED_CHANGE_Y);
+			file.Print_File(SPEED_CHAGNE_PATH, SPEED_CHANGE_X, SPEED_CHANGE_Y);
 
 			if (key == 13 || key == 27)
 			{
@@ -340,7 +327,7 @@ public:
 					falling_speed = tmp;
 					*speed = Cal_Speed();
 				}
-				file.Clear_File(SPEED_CHAGNE, SPEED_CHANGE_X, SPEED_CHANGE_Y);
+				file.Clear_File(SPEED_CHAGNE_PATH, SPEED_CHANGE_X, SPEED_CHANGE_Y);
 				Print_Speed(falling_speed);
 				return;
 			}
@@ -353,6 +340,16 @@ public:
 				Print_Speed(tmp);
 			}
 		} while (1);
+	}
+
+	double Cal_Speed()
+	{
+		return 1000 * (1 / falling_speed);
+	}
+
+	bool Game_Over()
+	{
+		return top > 0 ? true : false;
 	}
 };
 

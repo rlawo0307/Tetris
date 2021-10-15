@@ -7,15 +7,21 @@
 #include "Cursor.h"
 
 #define MAIN_SCREEN_PATH "./res/main_menu.txt"
-#define INPUT_ID "res/input_ID.txt"
-#define RANKING_SCREEN_PATH "./res/rank.txt"
-#define HELP_SCREEN_PATH "./res/help.txt"
-#define OPTION_SCREEN_PATH "./res/option.txt"
-#define NEW_GAME_PATH "./res/new_game.txt"
-#define GAME_MENU "./res/game_menu.txt"
+#define RANK_PATH "./res/rank.txt"
+#define HELP_PATH "./res/help.txt"
+#define OPTION_PATH "./res/option.txt"
+#define GAME_MENU_PATH "./res/game_menu.txt"
 
-#define GAME_MENU_X 8
-#define GAME_MENU_Y 5
+#define MAIN_SCREEN_X 10
+#define MAIN_SCREEN_Y 10
+#define HELP_X MAIN_SCREEN_X+10
+#define HELP_Y MAIN_SCREEN_Y+3
+#define RANK_X MAIN_SCREEN_X+25
+#define RANK_Y MAIN_SCREEN_Y
+#define OPTION_X HELP_X
+#define OPTION_Y HELP_Y
+#define GAME_MENU_X MAIN_SCREEN_X+8
+#define GAME_MENU_Y MAIN_SCREEN_Y+5
 
 class MENU
 {
@@ -33,7 +39,7 @@ public:
 	void Show_Main()
 	{
 		system("cls");
-		file.Print_File(MAIN_SCREEN_PATH, 0, 0);
+		file.Print_File(MAIN_SCREEN_PATH, MAIN_SCREEN_X, MAIN_SCREEN_Y);
 	}
 
 	void New_Game()
@@ -44,36 +50,6 @@ public:
 		Play_Game(player1, gm);
 	}
 
-	void Show_Option()
-	{
-		char key = ' ';
-
-		system("cls");
-		//file.File_Open(OPTION_SCREEN_PATH);
-		while (key != 'e')
-			key = _getch();
-	}
-
-	void Show_Rank()
-	{
-		char key = ' ';
-
-		system("cls");
-		//file.File_Open(RANKING_SCREEN_PATH);
-		while (key != 'e')
-			key = _getch();
-	}
-
-	void Show_Help()
-	{
-		char key = ' ';
-
-		system("cls");
-		//file.File_Open(HELP_SCREEN_PATH);
-		while (key != 'e')
-			key = _getch();
-	}
-
 	void Load_Game()
 	{
 		//select 1p or 2p
@@ -82,11 +58,38 @@ public:
 		//Play_Game_1P() or Play_Game_2P()
 	}
 
+	void Show_Help()
+	{
+		char key = ' ';
+
+		file.Print_File(HELP_PATH, HELP_X, HELP_Y);
+		while (key != 27) // esc
+			key = _getch();
+	}
+
+	void Show_Rank()
+	{
+		char key = ' ';
+
+		file.Print_File(RANK_PATH, RANK_X, RANK_Y);
+		while (key != 27) // esc
+			key = _getch();
+	}
+
+	void Show_Option()
+	{
+		char key = ' ';
+
+		file.Print_File(OPTION_PATH, OPTION_X, OPTION_Y);
+		while (key != 27) // esc
+			key = _getch();
+	}
+
 	void Show_Game_Menu(Game_Manager& gm, double* speed)
 	{
 		char key = ' ';
 
-		file.Print_File(GAME_MENU, GAME_MENU_X, GAME_MENU_Y);
+		file.Print_File(GAME_MENU_PATH, GAME_MENU_X, GAME_MENU_Y);
 		do
 		{
 			key = _getch();
@@ -95,7 +98,7 @@ public:
 			case 'c': gm.Change_Speed(speed); break;
 			case 'h': break;
 			case 's': break;
-			case 27: file.Clear_File(GAME_MENU, GAME_MENU_X, GAME_MENU_Y); return; //esc
+			case 27: file.Clear_File(GAME_MENU_PATH, GAME_MENU_X, GAME_MENU_Y); return; //esc
 			}
 		} while (1);
 	}
