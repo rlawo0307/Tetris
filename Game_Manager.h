@@ -3,6 +3,9 @@
 #include <iostream>
 #include <random>
 #include "Cursor.h"
+#include "File.h"
+
+#define SPEED_CHAGNE "./res/speed_change.txt"
 
 #define C_EMPTY 15 //white
 #define C_BLOCK1 1 //blue
@@ -29,6 +32,9 @@
 #define SPEED_X SCORE_X
 #define SPEED_Y SCORE_Y+1
 
+#define SPEED_CHANGE_X 60
+#define SPEED_CHANGE_Y 10
+
 class Game_Manager
 {
 private:
@@ -39,6 +45,7 @@ private:
 	int top = BOARD_COL - 1;
 	int color[8] = { C_EMPTY, C_BLOCK1, C_BLOCK2, C_BLOCK3, C_BLOCK4, C_BLOCK5,C_BLOCK6, C_BLOCK7 };
 	Cursor cs;
+	File file;
 
 public:
 	int score;
@@ -46,6 +53,7 @@ public:
 	Game_Manager()
 	{
 		cs = Cursor();
+		file = File();
 		score = 0;
 		falling_speed = 4.0;
 		i_next_block = 0;
@@ -314,18 +322,30 @@ public:
 		do
 		{
 			key = _getch();
-			cs.Cursor_Move(50, 10);
-			std::cout << "Speed Up(ก่), Speed Down(ก้)\n";
-			switch (key)
+			file.Print_File(SPEED_CHAGNE, SPEED_CHANGE_X, SPEED_CHANGE_Y);
+
+			if (key == 13 || key == 27)
 			{
-			case 72: tmp++; break; //UP
-			case 80: tmp--; break; //DOWN
-			case 27: break;//esc
-			case 13: falling_speed = tmp; *speed = Cal_Speed(); break; //enter
+				if (key == 13)
+				{
+					falling_speed = tmp;
+					*speed = Cal_Speed();
+				}
+				file.Clear_File(SPEED_CHAGNE, SPEED_CHANGE_X, SPEED_CHANGE_Y);
+				cs.Cursor_Move(SPEED_X, SPEED_Y);
+				std::cout << "\n* Speed : " << falling_speed << std::endl;
+				return;
 			}
-			cs.Cursor_Move(SPEED_X, SPEED_Y);
-			std::cout << "\n* Speed : " << tmp << std::endl;
-		} while (key != 27 && key != 13);
+			else if (key == 72 || key == 80)
+			{
+				if (key == 72 && tmp < 10)
+					tmp++;
+				else if(key == 80 && tmp > 1)
+					tmp--;
+				cs.Cursor_Move(SPEED_X, SPEED_Y);
+				std::cout << "\n* Speed : " << tmp << " " << std::endl;
+			}
+		} while (1);
 	}
 };
 

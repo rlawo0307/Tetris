@@ -33,7 +33,7 @@ public:
 	void Show_Main()
 	{
 		system("cls");
-		file.File_Open(MAIN_SCREEN_PATH, 0, 0);
+		file.Print_File(MAIN_SCREEN_PATH, 0, 0);
 	}
 
 	void Show_Option()
@@ -88,15 +88,18 @@ public:
 	{
 		char key = ' ';
 
-		file.File_Open(GAME_MENU, GAME_MENU_X, GAME_MENU_Y);
-		while (key != 27 && key != 'f')
-			key = _getch();
-		switch (key)
+		file.Print_File(GAME_MENU, GAME_MENU_X, GAME_MENU_Y);
+		do
 		{
-		case 27: system("cls"); break; //esc
-		case 'f': gm.Change_Speed(speed); break;
-		default: std::cout << (int)key;
-		}
+			key = _getch();
+			switch (key)
+			{
+			case 'c': gm.Change_Speed(speed); break;
+			case 'h': break;
+			case 's': break;
+			case 27: file.Clear_File(GAME_MENU, GAME_MENU_X, GAME_MENU_Y); return; //esc
+			}
+		} while (1);
 	}
 
 	void Play_Game(Player& player, Game_Manager& gm)
@@ -105,7 +108,7 @@ public:
 		char key = ' ';
 
 		system("cls");
-		file.File_Open(GAMEBOX_1P_PATH, 0, 0);
+		file.Print_File(GAMEBOX_1P_PATH, 0, 0);
 
 		while (gm.Game_Over())
 		{

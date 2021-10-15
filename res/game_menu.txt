@@ -1,5 +1,11 @@
----------------------
-l                    l
-l     Game Menu      l
-l                    l
----------------------
++------------------------+
+l                        l
+l    Change Speed ( c )  l
+l                        l
+l    Go Home      ( h )  l
+l                        l
+l    Save         ( s )  l
+l                        l
+l    Resume      ( ecs ) l
+l                        l
++------------------------+
