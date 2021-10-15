@@ -1,1 +1,24 @@
-gamebox
++----------------------+-------------------+
+l                      l                   l
+l                      l                   l
+l                      l    Next Block     l
+l                      l                   l
+l                      l    +---------+    l
+l                      l    l         l    l
+l                      l    l         l    l
+l                      l    l         l    l
+l                      l    +---------+    l
+l                      l                   l
+l                      l                   l
+l                      l                   l
+l                      l                   l
+l                      l                   l
+l                      l                   l
+l                      l-------------------l
+l                      l                   l
+l                      l   Score :         l
+l                      l                   l
+l                      l   Speed :         l
+l                      l                   l
+l                      l                   l
++----------------------+-------------------+

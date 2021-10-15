@@ -1,1 +1,20 @@
-main screen
++-----------------------+
+l                       l
+l      < TETRIS >       l
+l                       l
+l                       l
+l                       l
+l                       l
+l    New Game  ( n )    l
+l                       l
+l    Load Game ( l )    l
+l                       l
+l    Help      ( h )    l
+l                       l
+l    Rank      ( r )    l
+l                       l
+l    Option    ( o )    l
+l                       l
+l    Exit      ( e )    l
+l                       l
++-----------------------+

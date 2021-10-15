@@ -6,6 +6,25 @@
 #include "File.h"
 
 #define SPEED_CHAGNE "./res/speed_change.txt"
+#define GAMEBOX_PATH "./res/gamebox.txt"
+
+#define BOARD_COL 20
+#define BOARD_ROW 10
+#define BLOCK_COL 4
+#define BLOCK_ROW 4
+
+#define GAMEBOX_X 0
+#define GAMEBOX_Y 0
+#define BOARD_X GAMEBOX_X+2
+#define BOARD_Y GAMEBOX_Y+2
+#define BLOCK_X 2
+#define BLOCK_Y -3
+#define SCORE_X BOARD_X+BOARD_ROW+2
+#define SCORE_Y BOARD_Y+BOARD_COL+2
+#define SPEED_X SCORE_X
+#define SPEED_Y SCORE_Y+1
+#define SPEED_CHANGE_X 60
+#define SPEED_CHANGE_Y 10
 
 #define C_EMPTY 15 //white
 #define C_BLOCK1 1 //blue
@@ -15,25 +34,6 @@
 #define C_BLOCK5 5 //magenta
 #define C_BLOCK6 6 //brown
 #define C_BLOCK7 14 // yellow
-
-#define BOARD_COL 20
-#define BOARD_ROW 10
-#define BOARD_X 5
-#define BOARD_Y 5
-
-#define BLOCK_COL 4
-#define BLOCK_ROW 4
-#define BLOCK_X 2
-#define BLOCK_Y -3
-
-#define SCORE_X BOARD_X+BOARD_ROW+2
-#define SCORE_Y BOARD_Y+BOARD_COL+2
-
-#define SPEED_X SCORE_X
-#define SPEED_Y SCORE_Y+1
-
-#define SPEED_CHANGE_X 60
-#define SPEED_CHANGE_Y 10
 
 class Game_Manager
 {
@@ -245,6 +245,7 @@ public:
 
 	void Print_Board()
 	{
+		file.Print_File(GAMEBOX_PATH, 0, 0);
 		for (int i = 0; i < BOARD_COL; i++)
 		{
 			cs.Cursor_Move(BOARD_X, BOARD_Y + i);
@@ -255,7 +256,7 @@ public:
 			}
 		}
 		Print_Score();
-		Print_Speed();
+		Print_Speed(falling_speed);
 	}
 
 	void Updata_Top()
@@ -307,11 +308,11 @@ public:
 		std::cout << "\n* Score : " << score << std::endl;
 	}
 
-	void Print_Speed()
+	void Print_Speed(int speed)
 	{
 		cs.Cursor_Move(SPEED_X, SPEED_Y);
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color[0]);
-		std::cout << "\n* Speed : " << falling_speed << std::endl;
+		std::cout << "\n* Speed : " << speed << std::endl;
 	}
 
 	void Change_Speed(double* speed)
@@ -332,8 +333,7 @@ public:
 					*speed = Cal_Speed();
 				}
 				file.Clear_File(SPEED_CHAGNE, SPEED_CHANGE_X, SPEED_CHANGE_Y);
-				cs.Cursor_Move(SPEED_X, SPEED_Y);
-				std::cout << "\n* Speed : " << falling_speed << std::endl;
+				Print_Speed(falling_speed);
 				return;
 			}
 			else if (key == 72 || key == 80)
@@ -342,8 +342,7 @@ public:
 					tmp++;
 				else if(key == 80 && tmp > 1)
 					tmp--;
-				cs.Cursor_Move(SPEED_X, SPEED_Y);
-				std::cout << "\n* Speed : " << tmp << " " << std::endl;
+				Print_Speed(tmp);
 			}
 		} while (1);
 	}
