@@ -5,23 +5,27 @@
 #include "Player.h"
 #include "Game_Manager.h"
 #include "Cursor.h"
+#include "var.h"
 
 #define MAIN_SCREEN_PATH "./res/main_menu.txt"
 #define RANK_PATH "./res/rank.txt"
 #define HELP_PATH "./res/help.txt"
 #define OPTION_PATH "./res/option.txt"
 #define GAME_MENU_PATH "./res/game_menu.txt"
+#define SAVE_COMPLETE_PATH "./res/save_complete.txt"
 
-#define MAIN_SCREEN_X 10
-#define MAIN_SCREEN_Y 10
-#define HELP_X MAIN_SCREEN_X+10
-#define HELP_Y MAIN_SCREEN_Y+3
+#define MAIN_SCREEN_X BOX_X
+#define MAIN_SCREEN_Y BOX_Y
 #define RANK_X MAIN_SCREEN_X+25
 #define RANK_Y MAIN_SCREEN_Y
-#define OPTION_X HELP_X
-#define OPTION_Y HELP_Y
-#define GAME_MENU_X MAIN_SCREEN_X+8
-#define GAME_MENU_Y MAIN_SCREEN_Y+5
+#define HELP_X RANK_X
+#define HELP_Y RANK_Y
+#define OPTION_X RANK_X
+#define OPTION_Y RANK_Y
+
+#define GAME_MENU_X MAIN_SCREEN_X+45
+#define GAME_MENU_Y MAIN_SCREEN_Y
+
 
 class MENU
 {
@@ -79,7 +83,7 @@ public:
 			key = _getch();
 	}
 
-	void Show_Game_Menu(Game_Manager& gm, double* speed)
+	char Show_Game_Menu(Game_Manager& gm, double* speed)
 	{
 		char key = ' ';
 
@@ -90,9 +94,9 @@ public:
 			switch (key)
 			{
 			case 'c': gm.Change_Speed(speed); break;
-			case 'h': break;
-			case 's': gm.Save(); break;
-			case 27: file.Clear_File(GAME_MENU_PATH, GAME_MENU_X, GAME_MENU_Y); return; //esc
+			case 'h': return key;
+			case 's': return Save(gm);
+			case 27: file.Clear_File(GAME_MENU_PATH, GAME_MENU_X, GAME_MENU_Y); return key; //esc
 			}
 		} while (1);
 	}
@@ -101,6 +105,7 @@ public:
 	{
 		double speed = gm.Cal_Speed();
 		char key = ' ';
+		char tmp = ' ';
 
 		while (gm.Game_Over())
 		{
@@ -123,7 +128,7 @@ public:
 						case 75: if (gm.Check_Left_Side(block_x, block_y)) gm.Change_Board(&block_x, &block_y, key); break;
 						case 77: if (gm.Check_Right_Side(block_x, block_y)) gm.Change_Board(&block_x, &block_y, key); break;
 						case 32: gm.Change_Board(&block_x, &block_y, 32); break;
-						case 27: Show_Game_Menu(gm, &speed); gm.Print_Board(); break; //esc
+						case 27: if (Show_Game_Menu(gm, &speed) == 'h') return; else gm.Print_Board(); break; //esc
 						}
 					}
 				}
@@ -141,5 +146,29 @@ public:
 			} while (1);
 		}
 		std::cout << "Game Over\n";
+	}
+
+	char Save(Game_Manager& gm)
+	{
+		char key = ' ';
+		std::string ID;
+		Data data;
+		int score;
+
+		file.Print_File(SAVE_WAIT_PATH, GAME_MENU_X, GAME_MENU_Y);
+		Sleep(2000);
+		gm.Get_Data(ID, &score, data);
+		file.Write_File(ID, score, data);
+		file.Print_File(SAVE_COMPLETE_PATH, GAME_MENU_X, GAME_MENU_Y);
+		while (1)
+		{
+			key = _getch();
+			if (key == 'h' || key == 27)
+			{
+				file.Clear_File(SAVE_COMPLETE_PATH, GAME_MENU_X, GAME_MENU_Y);
+				break;
+			}
+		}
+		return key;
 	}
 };

@@ -2,11 +2,12 @@
 
 #include <iostream>
 #include <string>
+#include "var.h"
 
 #define INPUT_ID_PATH "res/input_ID.txt"
 
-#define ID_X 3
-#define ID_Y 6
+#define ID_X BOX_X
+#define ID_Y BOX_Y+20
 
 class Player
 {
@@ -27,7 +28,6 @@ public:
 	std::string Input_ID()
 	{
 		std::string str;
-		char key = ' ';
 
 		file.Print_File(INPUT_ID_PATH, ID_X, ID_Y);
 		cs.Cursor_Move(ID_X + 10, ID_Y+2);

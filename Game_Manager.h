@@ -4,30 +4,26 @@
 #include <random>
 #include "Cursor.h"
 #include "File.h"
+#include "var.h"
 
 #define SPEED_CHAGNE_PATH "./res/speed_change.txt"
 #define GAMEBOX_PATH "./res/gamebox.txt"
 #define SAVE_WAIT_PATH "./res/save_wait.txt"
+#define GAME_MENU_PATH "./res/game_menu.txt"
 
-#define BOARD_COL 20
-#define BOARD_ROW 10
-#define BLOCK_COL 4
-#define BLOCK_ROW 4
-
-#define GAMEBOX_X 10
-#define GAMEBOX_Y 10
+#define GAMEBOX_X BOX_X
+#define GAMEBOX_Y BOX_Y
 #define BOARD_X GAMEBOX_X+2
 #define BOARD_Y GAMEBOX_Y+2
-#define BLOCK_X 2
-#define BLOCK_Y -3
 #define SCORE_X GAMEBOX_X+BOARD_ROW+25
 #define SCORE_Y GAMEBOX_Y+BOARD_COL-2
 #define SPEED_X SCORE_X
 #define SPEED_Y SCORE_Y+2
-#define SPEED_CHANGE_X GAMEBOX_X+35
-#define SPEED_CHANGE_Y GAMEBOX_Y+5
-#define SAVE_WAIT_X GAMEBOX_X+8
-#define SAVE_WAIT_Y GAMEBOX_Y+5
+#define GAME_MENU_X GAMEBOX_X+45
+#define GAME_MENU_Y GAMEBOX_Y
+
+#define BLOCK_X 2
+#define BLOCK_Y -3
 
 #define C_EMPTY 15 //white
 #define C_BLOCK1 1 //blue
@@ -44,11 +40,7 @@ private:
 	Cursor cs;
 	File file;
 	Player player;
-	double falling_speed;
-	int i_next_block; //index of next block
-	int board[BOARD_COL][BOARD_ROW];
-	int cur_block[BLOCK_COL][BLOCK_ROW];
-	int top = BOARD_COL - 1;
+	Data data;
 	int color[8] = { C_EMPTY, C_BLOCK1, C_BLOCK2, C_BLOCK3, C_BLOCK4, C_BLOCK5,C_BLOCK6, C_BLOCK7 };
 
 public:
@@ -57,8 +49,8 @@ public:
 	Game_Manager()
 	{
 		score = 0;
-		falling_speed = 4.0;
-		i_next_block = 0;
+		data.falling_speed = 4.0;
+		data.i_next_block = 0;
 		Init_Board();
 	}
 
@@ -66,16 +58,14 @@ public:
 	{
 		for (int i = 0; i < BOARD_COL; i++)
 			for (int j = 0; j < BOARD_ROW; j++)
-				board[i][j] = 0;
-
-		//Print_Board();
+				data.board[i][j] = 0;
 	}
 
 	void Init_Cur_Block()
 	{
 		for (int i = 0; i < BLOCK_COL; i++)
 			for (int j = 0; j < BLOCK_ROW; j++)
-				cur_block[i][j] = 0;
+				data.cur_block[i][j] = 0;
 	}
 
 	void Rand_Next_Block()
@@ -83,25 +73,25 @@ public:
 		std::random_device rd;
 		std::mt19937 gen(rd());
 		std::uniform_int_distribution<int> dis(1, 7);
-		i_next_block = dis(gen);
+		data.i_next_block = dis(gen);
 
 		Init_Cur_Block();
 
-		switch (i_next_block)
+		switch (data.i_next_block)
 		{
-		case 1: cur_block[0][3] = cur_block[1][3] = cur_block[2][3] = cur_block[3][3] = i_next_block; break;
-		case 2: cur_block[2][3] = cur_block[3][1] = cur_block[3][2] = cur_block[3][3] = i_next_block; break;
-		case 3: cur_block[2][1] = cur_block[3][1] = cur_block[3][2] = cur_block[3][3] = i_next_block; break;
-		case 4: cur_block[2][2] = cur_block[3][1] = cur_block[3][2] = cur_block[3][3] = i_next_block; break;
-		case 5: cur_block[2][2] = cur_block[2][3] = cur_block[3][2] = cur_block[3][3] = i_next_block; break;
-		case 6: cur_block[2][2] = cur_block[2][3] = cur_block[3][1] = cur_block[3][2] = i_next_block; break;
-		case 7: cur_block[2][1] = cur_block[2][2] = cur_block[3][2] = cur_block[3][3] = i_next_block; break;
+		case 1: data.cur_block[0][3] = data.cur_block[1][3] = data.cur_block[2][3] = data.cur_block[3][3] = data.i_next_block; break;
+		case 2: data.cur_block[2][3] = data.cur_block[3][1] = data.cur_block[3][2] = data.cur_block[3][3] = data.i_next_block; break;
+		case 3: data.cur_block[2][1] = data.cur_block[3][1] = data.cur_block[3][2] = data.cur_block[3][3] = data.i_next_block; break;
+		case 4: data.cur_block[2][2] = data.cur_block[3][1] = data.cur_block[3][2] = data.cur_block[3][3] = data.i_next_block; break;
+		case 5: data.cur_block[2][2] = data.cur_block[2][3] = data.cur_block[3][2] = data.cur_block[3][3] = data.i_next_block; break;
+		case 6: data.cur_block[2][2] = data.cur_block[2][3] = data.cur_block[3][1] = data.cur_block[3][2] = data.i_next_block; break;
+		case 7: data.cur_block[2][1] = data.cur_block[2][2] = data.cur_block[3][2] = data.cur_block[3][3] = data.i_next_block; break;
 		}
 
 		for (int i = 0; i < BLOCK_COL; i++)
 			for (int j = 0; j < BLOCK_ROW; j++)
 				if (BLOCK_Y + i >= 0)
-					board[BLOCK_Y + i][BLOCK_X + j] = cur_block[i][j];
+					data.board[BLOCK_Y + i][BLOCK_X + j] = data.cur_block[i][j];
 
 		Print_Board();
 	}
@@ -113,7 +103,7 @@ public:
 			return false;
 		//reach other block
 		for (int i = 0; i < BLOCK_ROW; i++)
-			if (cur_block[BLOCK_COL - 1][i] != 0 && board[block_y + BLOCK_COL][block_x + i] != 0)
+			if (data.cur_block[BLOCK_COL - 1][i] != 0 && data.board[block_y + BLOCK_COL][block_x + i] != 0)
 				return false;
 		return true;
 	}
@@ -122,10 +112,10 @@ public:
 	{
 		for (int i = 0; i < BLOCK_COL; i++)
 			for (int j = 0; j < BLOCK_ROW; j++)
-				if (cur_block[i][j] != 0)
+				if (data.cur_block[i][j] != 0)
 				{
 					if (block_x + j == 0 //reach end of board
-						|| board[block_y + i][block_x + j - 1] != 0) // reach other block
+						|| data.board[block_y + i][block_x + j - 1] != 0) // reach other block
 						return false;
 					break;
 				}
@@ -136,10 +126,10 @@ public:
 	{
 		for (int i = 0; i < BLOCK_COL; i++)
 			for (int j = BLOCK_ROW - 1; j >= 0; j--)
-				if (cur_block[i][j] != 0)
+				if (data.cur_block[i][j] != 0)
 				{
 					if (block_x + j == BOARD_ROW - 1// reach end of board
-						|| board[block_y + i][block_x + j + 1] != 0)
+						|| data.board[block_y + i][block_x + j + 1] != 0)
 						return false;
 					break;
 				}
@@ -151,8 +141,8 @@ public:
 		//clear prev block
 		for (int i = 0; i < BLOCK_COL; i++)
 			for (int j = 0; j < BLOCK_ROW; j++)
-				if (cur_block[i][j] != 0)
-					board[*cur_block_y + i][*cur_block_x + j] = 0;
+				if (data.cur_block[i][j] != 0)
+					data.board[*cur_block_y + i][*cur_block_x + j] = 0;
 
 		switch (key)
 		{
@@ -165,8 +155,8 @@ public:
 		//change next block
 		for (int i = 0; i < BLOCK_COL; i++)
 			for (int j = 0; j < BLOCK_ROW; j++)
-				if (cur_block[i][j] != 0)
-					board[*cur_block_y + i][*cur_block_x + j] = cur_block[i][j];
+				if (data.cur_block[i][j] != 0)
+					data.board[*cur_block_y + i][*cur_block_x + j] = data.cur_block[i][j];
 
 		Print_Board();
 	}
@@ -179,8 +169,8 @@ public:
 
 		for (int i = 0; i < BLOCK_COL; i++)
 			for (int j = 0; j < BLOCK_ROW; j++)
-				if (cur_block[i][j] != 0)
-					tmp[j][BLOCK_ROW - 1 - i] = cur_block[i][j];
+				if (data.cur_block[i][j] != 0)
+					tmp[j][BLOCK_ROW - 1 - i] = data.cur_block[i][j];
 
 		while (check)
 		{
@@ -228,7 +218,7 @@ public:
 		check = true;
 		for (int i = 0; i < BLOCK_COL; i++)
 			for (int j = 0; j < BLOCK_ROW; j++)
-				if (tmp[i][j] != 0 && board[*block_y + i][*block_x + j] != 0)
+				if (tmp[i][j] != 0 && data.board[*block_y + i][*block_x + j] != 0)
 				{
 					check = false;
 					break;
@@ -239,7 +229,7 @@ public:
 
 			for (int i = 0; i < BLOCK_COL; i++)
 				for (int j = 0; j < BLOCK_ROW; j++)
-					cur_block[i][j] = tmp[i][j];
+					data.cur_block[i][j] = tmp[i][j];
 		}
 		else
 			return;
@@ -249,9 +239,9 @@ public:
 	{
 		for (int i = 0; i < BOARD_COL; i++)
 			for (int j = 0; j < BOARD_ROW; j++)
-				if (board[i][j] != 0 && top > i)
+				if (data.board[i][j] != 0 && data.top > i)
 				{
-					top = i;
+					data.top = i;
 					return;
 				}
 	}
@@ -264,7 +254,7 @@ public:
 		{
 			check = true;
 			for (int j = 0; j < BOARD_ROW; j++)
-				if (board[*block_y + i][j] == 0)
+				if (data.board[*block_y + i][j] == 0)
 				{
 					check = false;
 					break;
@@ -275,9 +265,9 @@ public:
 				for (int k = *block_y + i; k >= 0; k--)
 					for (int j = 0; j < BOARD_ROW; j++)
 						if (k == 0)
-							board[k][j] = 0;
+							data.board[k][j] = 0;
 						else
-							board[k][j] = board[k - 1][j];
+							data.board[k][j] = data.board[k - 1][j];
 			}
 		}
 	}
@@ -290,12 +280,12 @@ public:
 			cs.Cursor_Move(BOARD_X, BOARD_Y + i);
 			for (int j = 0; j < BOARD_ROW; j++)
 			{
-				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color[board[i][j]]);
+				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color[data.board[i][j]]);
 				std::cout << "бс";
 			}
 		}
 		Print_Score();
-		Print_Speed(falling_speed);
+		Print_Speed(data.falling_speed);
 	}
 
 	void Print_Score()
@@ -315,22 +305,22 @@ public:
 	void Change_Speed(double* speed)
 	{
 		char key = ' ';
-		int tmp = falling_speed;
+		int tmp = data.falling_speed;
 
 		do
 		{
+			file.Print_File(SPEED_CHAGNE_PATH, GAME_MENU_X, GAME_MENU_Y);
 			key = _getch();
-			file.Print_File(SPEED_CHAGNE_PATH, SPEED_CHANGE_X, SPEED_CHANGE_Y);
-
 			if (key == 13 || key == 27)
 			{
 				if (key == 13)
 				{
-					falling_speed = tmp;
+					data.falling_speed = tmp;
 					*speed = Cal_Speed();
 				}
-				file.Clear_File(SPEED_CHAGNE_PATH, SPEED_CHANGE_X, SPEED_CHANGE_Y);
-				Print_Speed(falling_speed);
+				//file.Clear_File(SPEED_CHAGNE_PATH, SPEED_CHANGE_X, SPEED_CHANGE_Y);
+				file.Print_File(GAME_MENU_PATH, GAME_MENU_X, GAME_MENU_Y);
+				Print_Speed(data.falling_speed);
 				return;
 			}
 			else if (key == 72 || key == 80)
@@ -346,25 +336,41 @@ public:
 
 	double Cal_Speed()
 	{
-		return 1000 * (1 / falling_speed);
+		return 1000 * (1 / data.falling_speed);
 	}
 
-	void Save()
+	/*
+	char Save()
 	{
-		file.Print_File(SAVE_WAIT_PATH, SAVE_WAIT_X, SAVE_WAIT_Y);
+		char key = ' ';
+
+		file.Print_File(SAVE_WAIT_PATH, GAME_MENU_X, GAME_MENU_Y);
 		Sleep(2000);
 		file.Write_File(player.Get_ID(), score, falling_speed, i_next_block, board, cur_block, top);
-		cs.Cursor_Move(SAVE_WAIT_X + 9, SAVE_WAIT_Y + 4);
-		std::cout << "        ";
-		cs.Cursor_Move(SAVE_WAIT_X+9, SAVE_WAIT_Y + 5);
-		std::cout << "Complete!";
-		cs.Cursor_Move(SAVE_WAIT_X+7, SAVE_WAIT_Y + 6);
-		std::cout << "              ";
+		file.Print_File(SAVE_COMPLETE_PATH, GAME_MENU_X, GAME_MENU_Y);
+		
+		while (1)
+		{
+			key = _getch();
+			if (key == 'h' || key == 27)
+			{
+				file.Clear_File(SAVE_COMPLETE_PATH, GAME_MENU_X, GAME_MENU_Y);
+				break;
+			}
+		}
+		return key;
 	}
+	*/
 
 	bool Game_Over()
 	{
-		return top > 0 ? true : false;
+		return data.top > 0 ? true : false;
+	}
+
+	void Get_Data(std::string des_ID, int* score, Data& des_data)
+	{
+		des_ID = player.Get_ID();
+		memcpy(&des_data, &data, sizeof(Data));
 	}
 };
 

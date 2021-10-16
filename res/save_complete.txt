@@ -1,11 +1,11 @@
 +------------------------+
 l                        l
 l                        l
+l        Complete!       l
 l                        l
-l    Speed Up   ( ก่ )   l
+l    Go Home      ( h )  l
 l                        l
-l    Speed Down ( ก้ )   l
-l                        l
+l    Resume      ( ecs ) l
 l                        l
 l                        l
 +------------------------+

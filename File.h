@@ -4,11 +4,7 @@
 #include <fstream>
 #include <string>
 #include "Cursor.h"
-
-#define BOARD_COL 20
-#define BOARD_ROW 10
-#define BLOCK_COL 4
-#define BLOCK_ROW 4
+#include "var.h"
 
 class File
 {
@@ -56,7 +52,7 @@ public:
 		ifs.close();
 	}
 
-	void Write_File(std::string ID, int score, int falling_speed, int i_next_block, int (*board)[BOARD_ROW], int (*cur_block)[BLOCK_ROW], int top)
+	void Write_File(std::string ID, int score, Data& data)
 	{
 		std::string path = "./save/";
 
@@ -70,23 +66,23 @@ public:
 		}
 		ofs << "ID : " << ID << std::endl;
 		ofs << "score : " << score << std::endl;
-		ofs << "falling speed : " << falling_speed << std::endl;
-		ofs << "i_next_block : " << i_next_block << std::endl;
+		ofs << "falling speed : " << data.falling_speed << std::endl;
+		ofs << "i_next_block : " << data.i_next_block << std::endl;
 		ofs << "board : \n";
 		for (int i = 0; i < BOARD_COL; i++)
 		{
 			for (int j = 0; j < BOARD_ROW; j++)
-				ofs << board[i][j] << " ";
+				ofs << data.board[i][j] << " ";
 			ofs << "\n";
 		}
 		ofs << "cur_block : \n";
 		for (int i = 0; i < BLOCK_COL; i++)
 		{
 			for (int j = 0; j < BLOCK_ROW; j++)
-				ofs << cur_block[i][j] << " ";
+				ofs << data.cur_block[i][j] << " ";
 			ofs << "\n";
 		}
-		ofs << "top : " << top << std::endl;
+		ofs << "top : " << data.top << std::endl;
 		ofs.close();
 	}
 };
