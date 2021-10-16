@@ -7,6 +7,7 @@
 
 #define SPEED_CHAGNE_PATH "./res/speed_change.txt"
 #define GAMEBOX_PATH "./res/gamebox.txt"
+#define SAVE_WAIT_PATH "./res/save_wait.txt"
 
 #define BOARD_COL 20
 #define BOARD_ROW 10
@@ -19,12 +20,14 @@
 #define BOARD_Y GAMEBOX_Y+2
 #define BLOCK_X 2
 #define BLOCK_Y -3
-#define SCORE_X GAMEBOX_X+BOARD_ROW+15
+#define SCORE_X GAMEBOX_X+BOARD_ROW+25
 #define SCORE_Y GAMEBOX_Y+BOARD_COL-2
 #define SPEED_X SCORE_X
 #define SPEED_Y SCORE_Y+2
 #define SPEED_CHANGE_X GAMEBOX_X+35
 #define SPEED_CHANGE_Y GAMEBOX_Y+5
+#define SAVE_WAIT_X GAMEBOX_X+8
+#define SAVE_WAIT_Y GAMEBOX_Y+5
 
 #define C_EMPTY 15 //white
 #define C_BLOCK1 1 //blue
@@ -40,6 +43,7 @@ class Game_Manager
 private:
 	Cursor cs;
 	File file;
+	Player player;
 	double falling_speed;
 	int i_next_block; //index of next block
 	int board[BOARD_COL][BOARD_ROW];
@@ -52,8 +56,6 @@ public:
 
 	Game_Manager()
 	{
-		cs = Cursor();
-		file = File();
 		score = 0;
 		falling_speed = 4.0;
 		i_next_block = 0;
@@ -345,6 +347,19 @@ public:
 	double Cal_Speed()
 	{
 		return 1000 * (1 / falling_speed);
+	}
+
+	void Save()
+	{
+		file.Print_File(SAVE_WAIT_PATH, SAVE_WAIT_X, SAVE_WAIT_Y);
+		Sleep(2000);
+		file.Write_File(player.Get_ID(), score, falling_speed, i_next_block, board, cur_block, top);
+		cs.Cursor_Move(SAVE_WAIT_X + 9, SAVE_WAIT_Y + 4);
+		std::cout << "        ";
+		cs.Cursor_Move(SAVE_WAIT_X+9, SAVE_WAIT_Y + 5);
+		std::cout << "Complete!";
+		cs.Cursor_Move(SAVE_WAIT_X+7, SAVE_WAIT_Y + 6);
+		std::cout << "              ";
 	}
 
 	bool Game_Over()

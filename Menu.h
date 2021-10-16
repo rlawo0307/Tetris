@@ -30,11 +30,6 @@ private:
 	Cursor cs;
 
 public:
-	MENU()
-	{
-		file = File();
-		cs = Cursor();
-	}
 
 	void Show_Main()
 	{
@@ -44,10 +39,9 @@ public:
 
 	void New_Game()
 	{
-		Player player1 = Player(1);
 		Game_Manager gm = Game_Manager();
 		system("cls");
-		Play_Game(player1, gm);
+		Play_Game(gm);
 	}
 
 	void Load_Game()
@@ -97,13 +91,13 @@ public:
 			{
 			case 'c': gm.Change_Speed(speed); break;
 			case 'h': break;
-			case 's': break;
+			case 's': gm.Save(); break;
 			case 27: file.Clear_File(GAME_MENU_PATH, GAME_MENU_X, GAME_MENU_Y); return; //esc
 			}
 		} while (1);
 	}
 
-	void Play_Game(Player& player, Game_Manager& gm)
+	void Play_Game(Game_Manager& gm)
 	{
 		double speed = gm.Cal_Speed();
 		char key = ' ';

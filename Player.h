@@ -16,17 +16,15 @@ private:
 	std::string ID;
 
 public:
-	int score;
+	//int score;
 
-	Player(int num)
+	Player()
 	{
-		file = File();
-		cs = Cursor();
 		this->ID = Input_ID();
-		score = 0;
+		//score = 0;
 	}
 
-	const std::string Input_ID()
+	std::string Input_ID()
 	{
 		std::string str;
 		char key = ' ';
@@ -35,6 +33,13 @@ public:
 		cs.Cursor_Move(ID_X + 10, ID_Y+2);
 		std::cin >> str;
 		return str;
+	}
+
+	std::string Get_ID()
+	{
+		std::string tmp;
+		tmp.append(ID);
+		return tmp;
 	}
 };
 
