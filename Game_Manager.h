@@ -24,6 +24,8 @@
 
 #define BLOCK_X 2
 #define BLOCK_Y -3
+#define NEXT_BLOCK_X BOARD_X+BOARD_ROW+20
+#define NEXT_BLOCK_Y BOARD_Y+3
 
 #define C_EMPTY 15 //white
 #define C_BLOCK1 1 //blue
@@ -61,21 +63,17 @@ public:
 				data.board[i][j] = 0;
 	}
 
-	void Init_Cur_Block()
+	void Init_Block()
 	{
 		for (int i = 0; i < BLOCK_COL; i++)
 			for (int j = 0; j < BLOCK_ROW; j++)
-				data.cur_block[i][j] = 0;
+				data.cur_block[i][j] = data.next_block[i][j] = 0;
 	}
 
 	void Rand_Next_Block()
 	{
-		std::random_device rd;
-		std::mt19937 gen(rd());
-		std::uniform_int_distribution<int> dis(1, 7);
-		data.i_next_block = dis(gen);
-
-		Init_Cur_Block();
+		Rand_Block();
+		Init_Block();
 
 		switch (data.i_next_block)
 		{
@@ -94,6 +92,36 @@ public:
 					data.board[BLOCK_Y + i][BLOCK_X + j] = data.cur_block[i][j];
 
 		Print_Board();
+	}
+
+	void Rand_Block(int op)
+	{
+		std::random_device rd;
+		std::mt19937 gen(rd());
+		std::uniform_int_distribution<int> dis(1, 7);
+
+		if (op == 0) // cur_block
+		{
+			data.i_cur_block = dis(gen);
+		}
+		else // next_block
+		{
+			data.i_next_block = dis(gen);
+		}
+
+		for (int i = 0; i < 2; i++)
+		{
+			switch (data.i_next_block)
+			{
+			case 1: data.cur_block[0][3] = data.cur_block[1][3] = data.cur_block[2][3] = data.cur_block[3][3] = data.i_next_block; break;
+			case 2: data.cur_block[2][3] = data.cur_block[3][1] = data.cur_block[3][2] = data.cur_block[3][3] = data.i_next_block; break;
+			case 3: data.cur_block[2][1] = data.cur_block[3][1] = data.cur_block[3][2] = data.cur_block[3][3] = data.i_next_block; break;
+			case 4: data.cur_block[2][2] = data.cur_block[3][1] = data.cur_block[3][2] = data.cur_block[3][3] = data.i_next_block; break;
+			case 5: data.cur_block[2][2] = data.cur_block[2][3] = data.cur_block[3][2] = data.cur_block[3][3] = data.i_next_block; break;
+			case 6: data.cur_block[2][2] = data.cur_block[2][3] = data.cur_block[3][1] = data.cur_block[3][2] = data.i_next_block; break;
+			case 7: data.cur_block[2][1] = data.cur_block[2][2] = data.cur_block[3][2] = data.cur_block[3][3] = data.i_next_block; break;
+			}
+		}
 	}
 
 	bool Check_Next_Line(int block_x, int block_y)
@@ -286,6 +314,23 @@ public:
 		}
 		Print_Score();
 		Print_Speed(data.falling_speed);
+		Print_Next_Block();
+	}
+
+	void Print_Next_Block()
+	{
+		for (int i = 0; i < BLOCK_COL; i++)
+		{
+			cs.Cursor_Move(NEXT_BLOCK_X, NEXT_BLOCK_Y + i);
+			for (int j = 0; j < BLOCK_ROW; j++)
+			{
+				if (data.cur_block[i][j] != 0)
+				{
+					SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color[data.cur_block[i][j]]);
+					std::cout << "бс";
+				}
+			}
+		}
 	}
 
 	void Print_Score()
@@ -318,7 +363,6 @@ public:
 					data.falling_speed = tmp;
 					*speed = Cal_Speed();
 				}
-				//file.Clear_File(SPEED_CHAGNE_PATH, SPEED_CHANGE_X, SPEED_CHANGE_Y);
 				file.Print_File(GAME_MENU_PATH, GAME_MENU_X, GAME_MENU_Y);
 				Print_Speed(data.falling_speed);
 				return;
@@ -338,29 +382,6 @@ public:
 	{
 		return 1000 * (1 / data.falling_speed);
 	}
-
-	/*
-	char Save()
-	{
-		char key = ' ';
-
-		file.Print_File(SAVE_WAIT_PATH, GAME_MENU_X, GAME_MENU_Y);
-		Sleep(2000);
-		file.Write_File(player.Get_ID(), score, falling_speed, i_next_block, board, cur_block, top);
-		file.Print_File(SAVE_COMPLETE_PATH, GAME_MENU_X, GAME_MENU_Y);
-		
-		while (1)
-		{
-			key = _getch();
-			if (key == 'h' || key == 27)
-			{
-				file.Clear_File(SAVE_COMPLETE_PATH, GAME_MENU_X, GAME_MENU_Y);
-				break;
-			}
-		}
-		return key;
-	}
-	*/
 
 	bool Game_Over()
 	{

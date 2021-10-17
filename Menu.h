@@ -107,6 +107,7 @@ public:
 		char key = ' ';
 		char tmp = ' ';
 
+		gm.Rand_Block(0);
 		while (gm.Game_Over())
 		{
 			int block_x = BLOCK_X, block_y = BLOCK_Y;
