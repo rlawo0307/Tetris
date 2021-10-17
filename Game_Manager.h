@@ -52,7 +52,6 @@ public:
 	{
 		score = 0;
 		data.falling_speed = 4.0;
-		data.i_next_block = 0;
 		Init_Board();
 	}
 
@@ -60,31 +59,32 @@ public:
 	{
 		for (int i = 0; i < BOARD_COL; i++)
 			for (int j = 0; j < BOARD_ROW; j++)
-				data.board[i][j] = 0;
+				data.board[i][j] = C_EMPTY;
 	}
 
 	void Init_Block(int (*block)[BLOCK_ROW])
 	{
 		for (int i = 0; i < BLOCK_COL; i++)
 			for (int j = 0; j < BLOCK_ROW; j++)
-				block[i][j] = 0;
+				block[i][j] = C_EMPTY;
 	}
 
 	void Rand_Next_Block(int op)
 	{
 		Init_Block(data.cur_block);
+		Rand_Block(data.cur_block);
+		/*
 		if (op == 0)
-			Rand_Block(&(data.i_cur_block), data.cur_block);
+			Rand_Block(data.cur_block);
 		else
 		{
 			for (int i = 0; i < BLOCK_COL; i++)
 				for (int j = 0; j < BLOCK_ROW; j++)
 					data.cur_block[i][j] = data.next_block[i][j];
-			data.i_cur_block = data.i_next_block;
 		}
 		Init_Block(data.next_block);
-		Rand_Block(&(data.i_next_block), data.next_block);
-
+		Rand_Block(data.next_block);
+		*/
 		for (int i = 0; i < BLOCK_COL; i++)
 			for (int j = 0; j < BLOCK_ROW; j++)
 				if (BLOCK_Y + i >= 0)
@@ -93,7 +93,7 @@ public:
 		Print_Board();
 	}
 
-	void Rand_Block(int* i_block, int (*block)[BLOCK_ROW])
+	void Rand_Block(int (*block)[BLOCK_ROW])
 	{
 		std::random_device rd;
 		std::mt19937 gen(rd());
@@ -110,7 +110,6 @@ public:
 		case 6: block[2][2] = block[2][3] = block[3][1] = block[3][2] = i; break;
 		case 7: block[2][1] = block[2][2] = block[3][2] = block[3][3] = i; break;
 		}
-		*i_block = i;
 	}
 
 	bool Check_Next_Line(int block_x, int block_y)
@@ -304,11 +303,7 @@ public:
 		}
 		Print_Score();
 		Print_Speed(data.falling_speed);
-		Print_Next_Block();
-	}
-
-	void Print_Next_Block()
-	{
+		/*
 		for (int i = 0; i < BLOCK_COL; i++)
 		{
 			cs.Cursor_Move(NEXT_BLOCK_X, NEXT_BLOCK_Y + i);
@@ -321,6 +316,7 @@ public:
 				}
 			}
 		}
+		*/
 	}
 
 	void Print_Score()
@@ -375,7 +371,7 @@ public:
 
 	bool Game_Over()
 	{
-		return data.top > 0 || data.top == -10 ? true : false;
+		return data.top > 0 ? true : false;
 	}
 
 	void Get_Data(std::string des_ID, int* score, Data& des_data)
@@ -384,10 +380,6 @@ public:
 		memcpy(&des_data, &data, sizeof(Data));
 	}
 
-	int Get_Top()
-	{
-		return data.top;
-	}
 
 };
 

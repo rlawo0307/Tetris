@@ -67,7 +67,7 @@ public:
 		ofs << "ID : " << ID << std::endl;
 		ofs << "score : " << score << std::endl;
 		ofs << "falling speed : " << data.falling_speed << std::endl;
-		ofs << "i_next_block : " << data.i_next_block << std::endl;
+		//ofs << "i_next_block : " << data.i_next_block << std::endl;
 		ofs << "board : \n";
 		for (int i = 0; i < BOARD_COL; i++)
 		{
