@@ -124,7 +124,7 @@ public:
 			switch (key)
 			{
 			case 'c': gm.Change_Speed(speed); break;
-			case 'h': return key;
+			case 'h': Save(gm); return key;
 			case 's': return Save(gm);
 			case 27: file.Clear_File(GAME_MENU_PATH, GAME_MENU_X, GAME_MENU_Y); return key; //esc
 			}
