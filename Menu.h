@@ -14,6 +14,8 @@
 #define GAME_MENU_PATH "./res/game_menu.txt"
 #define SAVE_COMPLETE_PATH "./res/save_complete.txt"
 #define GAME_OVER_PATH "./res/game_over.txt"
+#define SAVE_PAUSE_PATH "./res/save_pause.txt"
+#define ASK_SAVE_PATH "./res/ask_save.txt"
 
 #define MAIN_SCREEN_X BOX_X
 #define MAIN_SCREEN_Y BOX_Y
@@ -25,9 +27,13 @@
 #define OPTION_Y RANK_Y
 #define GAME_OVER_X MAIN_SCREEN_X+23
 #define GAME_OVER_Y MAIN_SCREEN_Y
-
+#define SAVE_PAUSE_X MAIN_SCREEN_X+6
+#define SAVE_PAUSE_Y MAIN_SCREEN_Y+10
 #define GAME_MENU_X MAIN_SCREEN_X+45
 #define GAME_MENU_Y MAIN_SCREEN_Y
+#define ASK_SAVE_X GAME_MENU_X
+#define ASK_SAVE_Y GAME_MENU_Y
+
 
 class MENU
 {
@@ -117,15 +123,16 @@ public:
 	{
 		char key = ' ';
 
-		file.Print_File(GAME_MENU_PATH, GAME_MENU_X, GAME_MENU_Y);
+		file.Print_File(SAVE_PAUSE_PATH, SAVE_PAUSE_X, SAVE_PAUSE_Y);
 		do
 		{
+			file.Print_File(GAME_MENU_PATH, GAME_MENU_X, GAME_MENU_Y);
 			key = _getch();
 			switch (key)
 			{
 			case 'c': gm.Change_Speed(speed); break;
-			case 'h': Save(gm); return key;
-			case 's': return Save(gm);
+			case 'h': key = Save(gm, key); if (key != 27) return key; else break;
+			case 's': return Save(gm, key);
 			case 27: file.Clear_File(GAME_MENU_PATH, GAME_MENU_X, GAME_MENU_Y); return key; //esc
 			}
 		} while (1);
@@ -179,13 +186,26 @@ public:
 		}
 	}
 
-	char Save(Game_Manager& gm)
+	char Save(Game_Manager& gm, char op)
 	{
 		char key = ' ';
 		std::string ID;
 		int score;
 		Data data;
 
+		if (op == 'h') // go home
+		{
+			file.Print_File(ASK_SAVE_PATH, ASK_SAVE_X, ASK_SAVE_Y);
+			while (key != 'y' && key != 'n' && key != 27)
+				key = _getch();
+			if (key == 'n')
+				return op;
+			else if (key == 27)
+			{
+				file.Clear_File(ASK_SAVE_PATH, ASK_SAVE_X, ASK_SAVE_Y);
+				return key;
+			}
+		}
 		file.Print_File(SAVE_WAIT_PATH, GAME_MENU_X, GAME_MENU_Y);
 		Sleep(1000);
 
@@ -193,15 +213,28 @@ public:
 		file.Write_File(ID, score, data);
 		file.Print_File(SAVE_COMPLETE_PATH, GAME_MENU_X, GAME_MENU_Y);
 		
-		while (1)
+		if (op == 's')
 		{
-			key = _getch();
-			if (key == 'h' || key == 27)
+			while (1)
 			{
-				file.Clear_File(SAVE_COMPLETE_PATH, GAME_MENU_X, GAME_MENU_Y);
-				break;
+				key = _getch();
+				if (key == 'h' || key == 27)
+				{
+					file.Clear_File(SAVE_COMPLETE_PATH, GAME_MENU_X, GAME_MENU_Y);
+					break;
+				}
 			}
+			return key;
 		}
-		return key;
+		else
+		{
+			cs.Cursor_Move(GAME_MENU_X+1, GAME_MENU_Y+5);
+			std::cout << "                        ";
+			cs.Cursor_Move(GAME_MENU_X+1, GAME_MENU_Y + 7);
+			std::cout << "                        ";
+			Sleep(1000);
+			return op;
+		}
+		
 	}
 };
