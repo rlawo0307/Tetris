@@ -21,6 +21,6 @@ int main()
 		case 'o': menu.Show_Option(); break;
 		case 'e': return 0;
 		}
-	} while (!(key == 'l'));
+	} while (key != 'l');
 }
 

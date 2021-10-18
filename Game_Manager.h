@@ -24,8 +24,8 @@
 
 #define BLOCK_X 2
 #define BLOCK_Y -3
-#define NEXT_BLOCK_X BOARD_X+BOARD_ROW+20
-#define NEXT_BLOCK_Y BOARD_Y+2
+#define NEXT_BLOCK_X BOARD_X+BOARD_ROW+16
+#define NEXT_BLOCK_Y BOARD_Y+4
 
 #define C_EMPTY 15 
 #define C_BLOCK1 4 
@@ -50,9 +50,15 @@ public:
 
 	Game_Manager()
 	{
+		Init_GM();
+	}
+
+	void Init_GM()
+	{
 		score = 0;
 		data.falling_speed = 4.0;
 		Init_Board();
+		data.top = BOARD_COL - 1;
 	}
 
 	void Init_Board()
@@ -117,8 +123,12 @@ public:
 			return false;
 		//reach other block
 		for (int i = 0; i < BLOCK_ROW; i++)
+		{
 			if (data.cur_block[BLOCK_COL - 1][i] != 0 && data.board[block_y + BLOCK_COL][block_x + i] != 0)
 				return false;
+			if (data.cur_block[BLOCK_COL - 2][i] != 0 && data.cur_block[BLOCK_COL - 1][i] == 0 && data.board[block_y + BLOCK_COL - 1][block_x + i] != 0)
+				return false;
+		}
 		return true;
 	}
 
@@ -288,7 +298,7 @@ public:
 
 	void Print_Board()
 	{
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color[0]);
+		//SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color[0]);
 		file.Print_File(GAMEBOX_PATH, GAMEBOX_X, GAMEBOX_Y);
 		for (int i = 0; i < BOARD_COL; i++)
 		{
@@ -301,12 +311,11 @@ public:
 		}
 		Print_Score();
 		Print_Speed(data.falling_speed);
-		/*
 		for (int i = 0; i < BLOCK_COL; i++)
 		{
-			cs.Cursor_Move(NEXT_BLOCK_X, NEXT_BLOCK_Y + i);
 			for (int j = 0; j < BLOCK_ROW; j++)
 			{
+				cs.Cursor_Move(NEXT_BLOCK_X+j*2, NEXT_BLOCK_Y + i);
 				if (data.next_block[i][j] != 0)
 				{
 					SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color[data.next_block[i][j]]);
@@ -314,7 +323,6 @@ public:
 				}
 			}
 		}
-		*/
 	}
 
 	void Print_Score()
@@ -369,7 +377,7 @@ public:
 
 	bool Game_Over()
 	{
-		return data.top >= 0 ? true : false;
+		return data.top <= 0 ? true : false;
 	}
 
 	void Get_Data(std::string des_ID, int* score, Data& des_data)

@@ -14,5 +14,5 @@ typedef struct DATA
 	int board[BOARD_COL][BOARD_ROW];
 	int cur_block[BLOCK_COL][BLOCK_ROW];
 	int next_block[BLOCK_COL][BLOCK_ROW];
-	int top = BOARD_COL - 1;
+	int top;
 }Data;

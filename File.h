@@ -25,6 +25,7 @@ public:
 			std::cout << "File Open Fail\n";
 			return;
 		}
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
 		while (getline(ifs, tmp))
 		{
 			cs.Cursor_Move(x, y++);

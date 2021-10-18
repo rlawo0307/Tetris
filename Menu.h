@@ -13,6 +13,7 @@
 #define OPTION_PATH "./res/option.txt"
 #define GAME_MENU_PATH "./res/game_menu.txt"
 #define SAVE_COMPLETE_PATH "./res/save_complete.txt"
+#define GAME_OVER_PATH "./res/game_over.txt"
 
 #define MAIN_SCREEN_X BOX_X
 #define MAIN_SCREEN_Y BOX_Y
@@ -22,6 +23,8 @@
 #define HELP_Y RANK_Y
 #define OPTION_X RANK_X
 #define OPTION_Y RANK_Y
+#define GAME_OVER_X OPTION_X
+#define GAME_OVER_Y OPTION_Y
 
 #define GAME_MENU_X MAIN_SCREEN_X+45
 #define GAME_MENU_Y MAIN_SCREEN_Y
@@ -44,9 +47,21 @@ public:
 
 	void New_Game()
 	{
+		char key = ' ';
+
 		Game_Manager gm = Game_Manager();
-		system("cls");
-		Play_Game(gm);
+		do
+		{
+			if(key == 'r')
+				gm.Init_GM();
+			system("cls");
+			Play_Game(gm);
+			file.Print_File(GAME_OVER_PATH, GAME_OVER_X, GAME_OVER_Y);
+			key = _getch();
+		} while (key == 'r');
+
+		while (key != 'h')
+			key = _getch();
 	}
 
 	void Load_Game()
@@ -109,7 +124,7 @@ public:
 		char tmp = ' ';
 
 		gm.Rand_Next_Block(0);
-		while (gm.Game_Over())
+		while (1)
 		{
 			int block_x = BLOCK_X, block_y = BLOCK_Y;
 			do
@@ -145,10 +160,10 @@ public:
 					break;
 				}
 			} while (1);
+			if (gm.Game_Over())
+				break;
 			gm.Rand_Next_Block(1);
 		}
-		std::cout << "Game Over\n";
-		Sleep(3000);
 	}
 
 	char Save(Game_Manager& gm)
