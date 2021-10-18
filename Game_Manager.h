@@ -59,21 +59,19 @@ public:
 	{
 		for (int i = 0; i < BOARD_COL; i++)
 			for (int j = 0; j < BOARD_ROW; j++)
-				data.board[i][j] = C_EMPTY;
+				data.board[i][j] = 0;
 	}
 
 	void Init_Block(int (*block)[BLOCK_ROW])
 	{
 		for (int i = 0; i < BLOCK_COL; i++)
 			for (int j = 0; j < BLOCK_ROW; j++)
-				block[i][j] = C_EMPTY;
+				block[i][j] = 0;
 	}
 
 	void Rand_Next_Block(int op)
 	{
 		Init_Block(data.cur_block);
-		Rand_Block(data.cur_block);
-		/*
 		if (op == 0)
 			Rand_Block(data.cur_block);
 		else
@@ -84,7 +82,7 @@ public:
 		}
 		Init_Block(data.next_block);
 		Rand_Block(data.next_block);
-		*/
+
 		for (int i = 0; i < BLOCK_COL; i++)
 			for (int j = 0; j < BLOCK_ROW; j++)
 				if (BLOCK_Y + i >= 0)
@@ -371,7 +369,7 @@ public:
 
 	bool Game_Over()
 	{
-		return data.top > 0 ? true : false;
+		return data.top >= 0 ? true : false;
 	}
 
 	void Get_Data(std::string des_ID, int* score, Data& des_data)
@@ -379,7 +377,5 @@ public:
 		des_ID = player.Get_ID();
 		memcpy(&des_data, &data, sizeof(Data));
 	}
-
-
 };
 

@@ -108,13 +108,12 @@ public:
 		char key = ' ';
 		char tmp = ' ';
 
-		//gm.Rand_Next_Block(0);
+		gm.Rand_Next_Block(0);
 		while (gm.Game_Over())
 		{
 			int block_x = BLOCK_X, block_y = BLOCK_Y;
 			do
 			{
-				gm.Rand_Next_Block(1);
 				gm.Print_Board();
 				int j = 0;
 				while (j++ < 10)
@@ -146,7 +145,7 @@ public:
 					break;
 				}
 			} while (1);
-			//gm.Rand_Next_Block(1);
+			gm.Rand_Next_Block(1);
 		}
 		std::cout << "Game Over\n";
 		Sleep(3000);
