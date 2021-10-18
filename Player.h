@@ -15,14 +15,12 @@ private:
 	File file;
 	Cursor cs;
 	std::string ID;
+	int score;
 
 public:
-	//int score;
-
 	Player()
 	{
 		this->ID = Input_ID();
-		//score = 0;
 	}
 
 	std::string Input_ID()
@@ -37,9 +35,17 @@ public:
 
 	std::string Get_ID()
 	{
-		std::string tmp;
-		tmp.append(ID);
-		return tmp;
+		return ID;
+	}
+
+	void Set_Score(int score)
+	{
+		this->score = score;
+	}
+
+	int Get_Score()
+	{
+		return score;
 	}
 };
 

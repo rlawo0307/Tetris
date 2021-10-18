@@ -58,7 +58,6 @@ public:
 		std::string path = "./save/";
 
 		path = path + ID + ".txt";
-
 		ofs.open(path);
 		if (!ofs.is_open())
 		{
@@ -68,7 +67,6 @@ public:
 		ofs << "ID : " << ID << std::endl;
 		ofs << "score : " << score << std::endl;
 		ofs << "falling speed : " << data.falling_speed << std::endl;
-		//ofs << "i_next_block : " << data.i_next_block << std::endl;
 		ofs << "board : \n";
 		for (int i = 0; i < BOARD_COL; i++)
 		{
@@ -81,6 +79,13 @@ public:
 		{
 			for (int j = 0; j < BLOCK_ROW; j++)
 				ofs << data.cur_block[i][j] << " ";
+			ofs << "\n";
+		}
+		ofs << "next_block : \n";
+		for (int i = 0; i < BLOCK_COL; i++)
+		{
+			for (int j = 0; j < BLOCK_ROW; j++)
+				ofs << data.next_block[i][j] << " ";
 			ofs << "\n";
 		}
 		ofs << "top : " << data.top << std::endl;

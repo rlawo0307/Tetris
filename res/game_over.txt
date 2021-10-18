@@ -1,11 +1,17 @@
-+----------------+
-l                l
-l   Game Over!   l
-l                l
-l                l
-l                l
-l   Retry ( r )  l
-l                l
-l   Go Home ( h )l
-l                l
-+----------------+
++-------------------+
+l                   l
+l                   l
+l                   l
+l    GAME OVER!     l
+l                   l
+l                   l
+l                   l
+l                   l
+l    Retry  ( r )   l
+l                   l
+l   Go Home ( h )   l
+l                   l
+l                   l
+l                   l
+l                   l
+l-------------------l

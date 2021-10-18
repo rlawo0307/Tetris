@@ -23,12 +23,11 @@
 #define HELP_Y RANK_Y
 #define OPTION_X RANK_X
 #define OPTION_Y RANK_Y
-#define GAME_OVER_X OPTION_X
-#define GAME_OVER_Y OPTION_Y
+#define GAME_OVER_X MAIN_SCREEN_X+23
+#define GAME_OVER_Y MAIN_SCREEN_Y
 
 #define GAME_MENU_X MAIN_SCREEN_X+45
 #define GAME_MENU_Y MAIN_SCREEN_Y
-
 
 class MENU
 {
@@ -58,7 +57,7 @@ public:
 			Play_Game(gm);
 			file.Print_File(GAME_OVER_PATH, GAME_OVER_X, GAME_OVER_Y);
 			key = _getch();
-		} while (key == 'r');
+		} while (key == 'r' && key != 'h');
 
 		while (key != 'h')
 			key = _getch();
@@ -170,14 +169,16 @@ public:
 	{
 		char key = ' ';
 		std::string ID;
-		Data data;
 		int score;
+		Data data;
 
 		file.Print_File(SAVE_WAIT_PATH, GAME_MENU_X, GAME_MENU_Y);
 		Sleep(2000);
+
 		gm.Get_Data(ID, &score, data);
 		file.Write_File(ID, score, data);
 		file.Print_File(SAVE_COMPLETE_PATH, GAME_MENU_X, GAME_MENU_Y);
+		
 		while (1)
 		{
 			key = _getch();

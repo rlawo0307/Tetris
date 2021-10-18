@@ -44,10 +44,9 @@ private:
 	Player player;
 	Data data;
 	int color[8] = { C_EMPTY, C_BLOCK1, C_BLOCK2, C_BLOCK3, C_BLOCK4, C_BLOCK5,C_BLOCK6, C_BLOCK7 };
-
-public:
 	int score;
 
+public:
 	Game_Manager()
 	{
 		Init_GM();
@@ -55,7 +54,8 @@ public:
 
 	void Init_GM()
 	{
-		score = 0;
+		player.Set_Score(0);
+		score = player.Get_Score();
 		data.falling_speed = 4.0;
 		Init_Board();
 		data.top = BOARD_COL - 1;
@@ -124,8 +124,9 @@ public:
 		//reach other block
 		for (int i = 0; i < BLOCK_COL; i++)
 			for (int j = 0; j < BLOCK_ROW; j++)
-				if (data.cur_block[i][j] != 0 && data.cur_block[i + 1][j] == 0 && data.board[block_y + i + 1][block_x + j] != 0)
-					return false;
+				if (data.cur_block[i][j] != 0 && (i + 1 == BLOCK_COL || data.cur_block[i + 1][j] == 0))
+					if(data.board[block_y + i + 1][block_x + j] != 0)
+						return false;
 		return true;
 	}
 
@@ -225,17 +226,6 @@ public:
 					if (c_cnt != 0 || r_cnt != 0)
 						tmp[i][j] = 0;
 				}
-
-		/*
-		for (int i = 0; i < BLOCK_ROW; i++)
-			for (int j = 0; j < BLOCK_COL; j++)
-				if (tmp[j][i] != 0 && *block_x < 0)
-				{
-					(*block_x) += i;
-					break;
-				}
-		*/
-
 		check = true;
 		for (int i = 0; i < BLOCK_COL; i++)
 			for (int j = 0; j < BLOCK_ROW; j++)
@@ -246,8 +236,6 @@ public:
 				}
 		if (check)
 		{
-			//Init_Cur_Block();
-
 			for (int i = 0; i < BLOCK_COL; i++)
 				for (int j = 0; j < BLOCK_ROW; j++)
 					data.cur_block[i][j] = tmp[i][j];
@@ -283,6 +271,7 @@ public:
 			if (check)
 			{
 				score += BOARD_ROW;
+				player.Set_Score(score);
 				for (int k = *block_y + i; k >= 0; k--)
 					for (int j = 0; j < BOARD_ROW; j++)
 						if (k == 0)
@@ -295,7 +284,6 @@ public:
 
 	void Print_Board()
 	{
-		//SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color[0]);
 		file.Print_File(GAMEBOX_PATH, GAMEBOX_X, GAMEBOX_Y);
 		for (int i = 0; i < BOARD_COL; i++)
 		{
@@ -377,9 +365,10 @@ public:
 		return data.top <= 0 ? true : false;
 	}
 
-	void Get_Data(std::string des_ID, int* score, Data& des_data)
+	void Get_Data(std::string& des_ID, int* score, Data& des_data)
 	{
 		des_ID = player.Get_ID();
+		*score = player.Get_Score();
 		memcpy(&des_data, &data, sizeof(Data));
 	}
 };
