@@ -44,31 +44,41 @@ public:
 		file.Print_File(MAIN_SCREEN_PATH, MAIN_SCREEN_X, MAIN_SCREEN_Y);
 	}
 
-	void New_Game()
+	void Game(int op)
 	{
 		char key = ' ';
-
 		Game_Manager gm = Game_Manager();
+
+		if (op == 0) // new game
+			gm.Init_GM();
+		else // load_game
+		{
+			std::string ID;
+			int score;
+			Data data;
+
+			do
+			{
+				file.Print_File(INPUT_ID_PATH, ID_X, ID_Y);
+				cs.Cursor_Move(ID_X + 10, ID_Y + 2);
+				std::cin >> ID;
+			} while (!file.Read_File(ID, &score, data));
+			gm.Set_Data(ID, score, data);
+		}
 		do
 		{
 			if(key == 'r')
 				gm.Init_GM();
 			system("cls");
 			Play_Game(gm);
+			if (!gm.Game_Over())
+				return;
 			file.Print_File(GAME_OVER_PATH, GAME_OVER_X, GAME_OVER_Y);
 			key = _getch();
-		} while (key == 'r' && key != 'h');
+		} while (key == 'r' || key != 'h');
 
 		while (key != 'h')
 			key = _getch();
-	}
-
-	void Load_Game()
-	{
-		//select 1p or 2p
-		//input ID
-		//Data Load
-		//Play_Game_1P() or Play_Game_2P()
 	}
 
 	void Show_Help()
@@ -120,12 +130,11 @@ public:
 	{
 		double speed = gm.Cal_Speed();
 		char key = ' ';
-		char tmp = ' ';
+		//char tmp = ' ';
 
 		gm.Rand_Next_Block(0);
 		while (1)
 		{
-			int block_x = BLOCK_X, block_y = BLOCK_Y;
 			do
 			{
 				gm.Print_Board();
@@ -138,24 +147,24 @@ public:
 						key = _getch();
 						switch (key)
 						{
-						case 72: while (gm.Check_Next_Line(block_x, block_y)) gm.Change_Board(&block_x, &block_y, 80); break;
-						case 80: if (gm.Check_Next_Line(block_x, block_y)) gm.Change_Board(&block_x, &block_y, key); break;
-						case 75: if (gm.Check_Left_Side(block_x, block_y)) gm.Change_Board(&block_x, &block_y, key); break;
-						case 77: if (gm.Check_Right_Side(block_x, block_y)) gm.Change_Board(&block_x, &block_y, key); break;
-						case 32: gm.Change_Board(&block_x, &block_y, 32); break;
-						case 27: if (Show_Game_Menu(gm, &speed) == 'h') return; else gm.Print_Board(); break; //esc
+						case 72: while (gm.Check_Next_Line()) gm.Change_Board(80); break;
+						case 80: if (gm.Check_Next_Line()) gm.Change_Board(key); break;
+						case 75: if (gm.Check_Left_Side()) gm.Change_Board(key); break;
+						case 77: if (gm.Check_Right_Side()) gm.Change_Board(key); break;
+						case 32: gm.Change_Board(32); break;
+						case 27: if (Show_Game_Menu(gm, &speed) == 'h') return ; else gm.Print_Board(); break; //esc
 						}
 					}
 				}
-				if (gm.Check_Next_Line(block_x, block_y))
+				if (gm.Check_Next_Line())
 				{
-					gm.Change_Board(&block_x, &block_y, 80); // down
+					gm.Change_Board(80); // down
 					Sleep(speed);
 				}
 				else
 				{
 					gm.Updata_Top();
-					gm.Score_Check(&block_x, &block_y);
+					gm.Score_Check();
 					break;
 				}
 			} while (1);
@@ -173,7 +182,7 @@ public:
 		Data data;
 
 		file.Print_File(SAVE_WAIT_PATH, GAME_MENU_X, GAME_MENU_Y);
-		Sleep(2000);
+		Sleep(1000);
 
 		gm.Get_Data(ID, &score, data);
 		file.Write_File(ID, score, data);

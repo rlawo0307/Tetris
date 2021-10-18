@@ -15,4 +15,5 @@ typedef struct DATA
 	int cur_block[BLOCK_COL][BLOCK_ROW];
 	int next_block[BLOCK_COL][BLOCK_ROW];
 	int top;
+	int block_x, block_y;
 }Data;

@@ -14,13 +14,13 @@ int main()
 		key = _getch();
 		switch (key)
 		{
-		case 'n': menu.New_Game(); break;
-		case 'l': menu.Load_Game(); break;
+		case 'n': menu.Game(0); break;
+		case 'l': menu.Game(1); break;
 		case 'h': menu.Show_Help(); break;
 		case 'r': menu.Show_Rank(); break;
 		case 'o': menu.Show_Option(); break;
 		case 'e': return 0;
 		}
-	} while (key != 'l');
+	} while (1);
 }
 

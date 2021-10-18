@@ -33,6 +33,11 @@ public:
 		return str;
 	}
 
+	void Set_ID(std::string ID)
+	{
+		this->ID = ID;
+	}
+
 	std::string Get_ID()
 	{
 		return ID;

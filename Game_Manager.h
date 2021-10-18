@@ -47,10 +47,6 @@ private:
 	int score;
 
 public:
-	Game_Manager()
-	{
-		Init_GM();
-	}
 
 	void Init_GM()
 	{
@@ -59,6 +55,23 @@ public:
 		data.falling_speed = 4.0;
 		Init_Board();
 		data.top = BOARD_COL - 1;
+		data.block_x = BLOCK_X;
+		data.block_y = BLOCK_Y;
+	}
+
+	void Set_Data(std::string ID, int score, DATA& ori_data)
+	{
+		player.Set_ID(ID);
+		player.Set_Score(score);
+		memcpy(&data, &ori_data, sizeof(Data));
+		this->score = score;
+	}
+
+	void Get_Data(std::string& des_ID, int* score, Data& des_data)
+	{
+		des_ID = player.Get_ID();
+		*score = player.Get_Score();
+		memcpy(&des_data, &data, sizeof(Data));
 	}
 
 	void Init_Board()
@@ -77,6 +90,8 @@ public:
 
 	void Rand_Next_Block(int op)
 	{
+		data.block_x = BLOCK_X;
+		data.block_y = BLOCK_Y;
 		Init_Block(data.cur_block);
 		if (op == 0)
 			Rand_Block(data.cur_block);
@@ -116,74 +131,74 @@ public:
 		}
 	}
 
-	bool Check_Next_Line(int block_x, int block_y)
+	bool Check_Next_Line()
 	{
 		//reach bottom
-		if (block_y + BLOCK_COL == BOARD_COL)
+		if (data.block_y + BLOCK_COL == BOARD_COL)
 			return false;
 		//reach other block
 		for (int i = 0; i < BLOCK_COL; i++)
 			for (int j = 0; j < BLOCK_ROW; j++)
 				if (data.cur_block[i][j] != 0 && (i + 1 == BLOCK_COL || data.cur_block[i + 1][j] == 0))
-					if(data.board[block_y + i + 1][block_x + j] != 0)
+					if(data.board[data.block_y + i + 1][data.block_x + j] != 0)
 						return false;
 		return true;
 	}
 
-	bool Check_Left_Side(int block_x, int block_y)
+	bool Check_Left_Side()
 	{
 		for (int i = 0; i < BLOCK_COL; i++)
 			for (int j = 0; j < BLOCK_ROW; j++)
 				if (data.cur_block[i][j] != 0)
 				{
-					if (block_x + j == 0 //reach end of board
-						|| data.board[block_y + i][block_x + j - 1] != 0) // reach other block
+					if (data.block_x + j == 0 //reach end of board
+						|| data.board[data.block_y + i][data.block_x + j - 1] != 0) // reach other block
 						return false;
 					break;
 				}
 		return true;
 	}
 
-	bool Check_Right_Side(int block_x, int block_y)
+	bool Check_Right_Side()
 	{
 		for (int i = 0; i < BLOCK_COL; i++)
 			for (int j = BLOCK_ROW - 1; j >= 0; j--)
 				if (data.cur_block[i][j] != 0)
 				{
-					if (block_x + j == BOARD_ROW - 1// reach end of board
-						|| data.board[block_y + i][block_x + j + 1] != 0)
+					if (data.block_x + j == BOARD_ROW - 1// reach end of board
+						|| data.board[data.block_y + i][data.block_x + j + 1] != 0)
 						return false;
 					break;
 				}
 		return true;
 	}
 
-	void Change_Board(int* cur_block_x, int* cur_block_y, char key)
+	void Change_Board(char key)
 	{
 		//clear prev block
 		for (int i = 0; i < BLOCK_COL; i++)
 			for (int j = 0; j < BLOCK_ROW; j++)
 				if (data.cur_block[i][j] != 0)
-					data.board[*cur_block_y + i][*cur_block_x + j] = 0;
+					data.board[data.block_y + i][data.block_x + j] = 0;
 
 		switch (key)
 		{
-		case 80: (*cur_block_y)++; break; //DOWN
-		case 75: (*cur_block_x)--; break; // LEFT
-		case 77: (*cur_block_x)++; break; // RIGHT
-		case 32: Rotate_Block(cur_block_x, cur_block_y); break; //SPACE 
+		case 80: (data.block_y)++; break; //DOWN
+		case 75: (data.block_x)--; break; // LEFT
+		case 77: (data.block_x)++; break; // RIGHT
+		case 32: Rotate_Block(); break; //SPACE 
 		}
 
 		//change next block
 		for (int i = 0; i < BLOCK_COL; i++)
 			for (int j = 0; j < BLOCK_ROW; j++)
 				if (data.cur_block[i][j] != 0)
-					data.board[*cur_block_y + i][*cur_block_x + j] = data.cur_block[i][j];
+					data.board[data.block_y + i][data.block_x + j] = data.cur_block[i][j];
 
 		Print_Board();
 	}
 
-	void Rotate_Block(int* block_x, int* block_y)
+	void Rotate_Block()
 	{
 		bool check = true;
 		int c_cnt = 0, r_cnt = 0;
@@ -229,7 +244,7 @@ public:
 		check = true;
 		for (int i = 0; i < BLOCK_COL; i++)
 			for (int j = 0; j < BLOCK_ROW; j++)
-				if (tmp[i][j] != 0 && data.board[*block_y + i][*block_x + j] != 0)
+				if (tmp[i][j] != 0 && data.board[data.block_y + i][data.block_x + j] != 0)
 				{
 					check = false;
 					break;
@@ -255,7 +270,7 @@ public:
 				}
 	}
 
-	void Score_Check(int* block_x, int* block_y)
+	void Score_Check()
 	{
 		bool check;
 
@@ -263,7 +278,7 @@ public:
 		{
 			check = true;
 			for (int j = 0; j < BOARD_ROW; j++)
-				if (data.board[*block_y + i][j] == 0)
+				if (data.board[data.block_y + i][j] == 0)
 				{
 					check = false;
 					break;
@@ -272,7 +287,7 @@ public:
 			{
 				score += BOARD_ROW;
 				player.Set_Score(score);
-				for (int k = *block_y + i; k >= 0; k--)
+				for (int k = data.block_y + i; k >= 0; k--)
 					for (int j = 0; j < BOARD_ROW; j++)
 						if (k == 0)
 							data.board[k][j] = 0;
@@ -365,11 +380,5 @@ public:
 		return data.top <= 0 ? true : false;
 	}
 
-	void Get_Data(std::string& des_ID, int* score, Data& des_data)
-	{
-		des_ID = player.Get_ID();
-		*score = player.Get_Score();
-		memcpy(&des_data, &data, sizeof(Data));
-	}
 };
 
