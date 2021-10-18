@@ -18,10 +18,6 @@ private:
 	int score;
 
 public:
-	Player()
-	{
-		this->ID = Input_ID();
-	}
 
 	std::string Input_ID()
 	{
@@ -33,12 +29,12 @@ public:
 		return str;
 	}
 
-	void Set_ID(std::string ID)
+	void Set_ID(std::string& ID)
 	{
 		this->ID = ID;
 	}
 
-	std::string Get_ID()
+	std::string& Get_ID()
 	{
 		return ID;
 	}

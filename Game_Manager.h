@@ -48,8 +48,9 @@ private:
 
 public:
 
-	void Init_GM()
+	void Init_GM(std::string& ID)
 	{
+		player.Set_ID(ID);
 		player.Set_Score(0);
 		score = player.Get_Score();
 		data.falling_speed = 4.0;

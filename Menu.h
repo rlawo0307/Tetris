@@ -48,12 +48,17 @@ public:
 	{
 		char key = ' ';
 		Game_Manager gm = Game_Manager();
+		std::string ID;
 
 		if (op == 0) // new game
-			gm.Init_GM();
+		{
+			file.Print_File(INPUT_ID_PATH, ID_X, ID_Y);
+			cs.Cursor_Move(ID_X + 10, ID_Y + 2);
+			std::cin >> ID;
+			gm.Init_GM(ID);
+		}
 		else // load_game
 		{
-			std::string ID;
 			int score;
 			Data data;
 
@@ -68,9 +73,9 @@ public:
 		do
 		{
 			if(key == 'r')
-				gm.Init_GM();
+				gm.Init_GM(ID);
 			system("cls");
-			Play_Game(gm);
+			Play_Game(gm, op);
 			if (!gm.Game_Over())
 				return;
 			file.Print_File(GAME_OVER_PATH, GAME_OVER_X, GAME_OVER_Y);
@@ -126,13 +131,13 @@ public:
 		} while (1);
 	}
 
-	void Play_Game(Game_Manager& gm)
+	void Play_Game(Game_Manager& gm, int op)
 	{
 		double speed = gm.Cal_Speed();
 		char key = ' ';
-		//char tmp = ' ';
 
-		gm.Rand_Next_Block(0);
+		if(op == 0) // new game
+			gm.Rand_Next_Block(0);
 		while (1)
 		{
 			do
