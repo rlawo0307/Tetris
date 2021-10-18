@@ -122,13 +122,10 @@ public:
 		if (block_y + BLOCK_COL == BOARD_COL)
 			return false;
 		//reach other block
-		for (int i = 0; i < BLOCK_ROW; i++)
-		{
-			if (data.cur_block[BLOCK_COL - 1][i] != 0 && data.board[block_y + BLOCK_COL][block_x + i] != 0)
-				return false;
-			if (data.cur_block[BLOCK_COL - 2][i] != 0 && data.cur_block[BLOCK_COL - 1][i] == 0 && data.board[block_y + BLOCK_COL - 1][block_x + i] != 0)
-				return false;
-		}
+		for (int i = 0; i < BLOCK_COL; i++)
+			for (int j = 0; j < BLOCK_ROW; j++)
+				if (data.cur_block[i][j] != 0 && data.cur_block[i + 1][j] == 0 && data.board[block_y + i + 1][block_x + j] != 0)
+					return false;
 		return true;
 	}
 
