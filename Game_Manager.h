@@ -242,6 +242,14 @@ public:
 					if (c_cnt != 0 || r_cnt != 0)
 						tmp[i][j] = 0;
 				}
+
+		std::cout << r_cnt + data.block_x;
+		Sleep(1000);
+		if (r_cnt + data.block_x < 0)
+			data.block_x += (r_cnt + data.block_x) * -1;
+		else if (data.block_x == 0 && data.cur_block[3][0] != 0) // special case
+			data.block_x = -3;
+
 		check = true;
 		for (int i = 0; i < BLOCK_COL; i++)
 			for (int j = 0; j < BLOCK_ROW; j++)
