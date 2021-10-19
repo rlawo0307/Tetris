@@ -8,7 +8,6 @@
 #include "var.h"
 
 #define MAIN_SCREEN_PATH "./res/main_menu.txt"
-#define RANK_PATH "./res/rank.txt"
 #define HELP_PATH "./res/help.txt"
 #define OPTION_PATH "./res/option.txt"
 #define GAME_MENU_PATH "./res/game_menu.txt"
@@ -16,15 +15,14 @@
 #define GAME_OVER_PATH "./res/game_over.txt"
 #define SAVE_PAUSE_PATH "./res/save_pause.txt"
 #define ASK_SAVE_PATH "./res/ask_save.txt"
+#define RANK_PATH "./rank/rank.txt"
 
 #define MAIN_SCREEN_X BOX_X
 #define MAIN_SCREEN_Y BOX_Y
-#define RANK_X MAIN_SCREEN_X+25
-#define RANK_Y MAIN_SCREEN_Y
-#define HELP_X RANK_X
-#define HELP_Y RANK_Y
-#define OPTION_X RANK_X
-#define OPTION_Y RANK_Y
+#define HELP_X MAIN_SCREEN_X+25
+#define HELP_Y MAIN_SCREEN_Y
+#define OPTION_X HELP_X
+#define OPTION_Y HELP_Y
 #define GAME_OVER_X MAIN_SCREEN_X+23
 #define GAME_OVER_Y MAIN_SCREEN_Y
 #define SAVE_PAUSE_X MAIN_SCREEN_X+6
@@ -33,6 +31,8 @@
 #define GAME_MENU_Y MAIN_SCREEN_Y
 #define ASK_SAVE_X GAME_MENU_X
 #define ASK_SAVE_Y GAME_MENU_Y
+#define RANK_X HELP_X
+#define RANK_Y HELP_Y
 
 
 class MENU

@@ -119,10 +119,11 @@ public:
 
 	void Write_File(std::string& ID, int score, Data& data)
 	{
-		std::string path = "./save/";
+		std::string save_path = "./save/";
+		//std::string rank_path = "./rank/rank.txt";
 
-		path = path + ID + ".txt";
-		ofs.open(path);
+		save_path = save_path + ID + ".txt";
+		ofs.open(save_path);
 		if (!ofs.is_open())
 		{
 			std::cout << "File Open Fail\n";
@@ -153,5 +154,14 @@ public:
 		ofs << data.block_x << std::endl;
 		ofs << data.block_y << std::endl;
 		ofs.close();
+
+		/*
+		ofs.open(rank_path);
+		if (!ofs.is_open())
+		{
+			std::cout << "File Open Fail\n";
+			return;
+		}
+		*/
 	}
 };
